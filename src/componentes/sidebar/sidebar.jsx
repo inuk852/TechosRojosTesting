@@ -27,12 +27,12 @@ function Sidebar() {
         </div>
 
         <nav>
-            <NavLink link="/" title="Mesas" />
+            <NavLink link="/mesas" title="Mesas" />
             <NavLink link="/" title="Rapido" />
             <NavLink link="/" title="Domicilios" />
             <NavLink link="/" title="Caja" />
             <NavLink link="/" title="Historial" />
-            <NavLink link="/" title="Menú" />
+            <NavLink link="/menu" title="Menú" />
         </nav>
 
 <button className='logout-btn'>Cerrar sesión</button>

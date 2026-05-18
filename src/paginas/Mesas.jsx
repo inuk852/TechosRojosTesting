@@ -25,7 +25,7 @@ function Mesas() {
 	}
 
 	return <>
-		 <header>
+		 <header className="CabeceraMesas">
             <h1>Mesas</h1>
             <div className="botones">
                 <button onClick={() => setMostrarAgregarModal(true)} className='agregar' >Agregar mesa</button>

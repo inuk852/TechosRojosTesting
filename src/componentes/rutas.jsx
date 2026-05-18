@@ -2,6 +2,7 @@ import { Route, Routes, useNavigate } from "react-router";
 import Login from "../paginas/Login";
 import Mesas from "../paginas/Mesas";
 import Tarjeta from "./tarjeta/tarjeta";
+import MenuPage from "./menu/MenuPage";
 import Sidebar from "./sidebar/sidebar";
 import { useState } from "react";
 
@@ -26,6 +27,7 @@ function Rutas() {
 		<div className="contenido">
 			<Routes>
 				<Route path="/mesas" element={<Mesas />} />
+				<Route path="/menu" element={<MenuPage />} />
 			</Routes>
 		</div>
 	</>
