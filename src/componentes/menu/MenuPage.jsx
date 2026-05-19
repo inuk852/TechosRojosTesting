@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect, useCallback } from "react";
 import "./MenuPage.css";
 
 const LS_KEY = "tr_menu_products";
+const LS_DRAFT_KEY = "tr_menu_draft";
 
 function loadProducts() {
   try {
@@ -14,6 +15,23 @@ function loadProducts() {
 
 function saveProducts(products) {
   localStorage.setItem(LS_KEY, JSON.stringify(products));
+}
+
+function loadDraft() {
+  try {
+    const raw = localStorage.getItem(LS_DRAFT_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+function saveDraft(draft) {
+  if (draft) {
+    localStorage.setItem(LS_DRAFT_KEY, JSON.stringify(draft));
+  } else {
+    localStorage.removeItem(LS_DRAFT_KEY);
+  }
 }
 
 const Icon = {
@@ -94,25 +112,45 @@ function CategoryFilter({ categories, selected, onChange }) {
   );
 }
 
-function ProductRow({ product, index, onEdit, onToggle, onDelete }) {
+function ProductRow({ product, index, onEdit, onToggle, onDelete, isDraftMode, onDraftChange, isPending }) {
   const date = new Date(product.created || Date.now()).toLocaleDateString("es-CO", {
     day: "2-digit", month: "short", year: "numeric"
   });
 
   return (
-    <div className={`ContenedorFilaProducto ${product.active ? "" : "Inactivo"}`}>
+    <div className={`ContenedorFilaProducto ${product.active ? "" : "Inactivo"} ${isPending ? "FilaPendiente" : ""}`}>
       <div className="ColumnaPuntoProducto">
         <div className={`PuntoEstadoProducto ${product.active ? "Activo" : "Inactivo"}`} />
       </div>
 
       <div className="ColumnaNombreProducto">
-        <span className="TextoNombreProducto">
-          {product.name}
-        </span>
-        {product.description && (
-          <span className="TextoDescripcionProducto">
-            {product.description}
-          </span>
+        {isDraftMode ? (
+          <div className="ContenedorDraftInputs">
+            <input
+              className="Entrada EntradaDraft"
+              value={product.name}
+              onChange={(e) => onDraftChange(index, "name", e.target.value)}
+              placeholder="Nombre"
+            />
+            <input
+              className="Entrada EntradaDraft"
+              value={product.description || ""}
+              onChange={(e) => onDraftChange(index, "description", e.target.value)}
+              placeholder="Descripción (opcional)"
+            />
+          </div>
+        ) : (
+          <>
+            <span className="TextoNombreProducto">
+              {product.name}
+            </span>
+            {product.description && (
+              <span className="TextoDescripcionProducto">
+                {product.description}
+              </span>
+            )}
+            {isPending && <span className="EtiquetaPendiente">Cambios pendientes</span>}
+          </>
         )}
       </div>
 
@@ -123,9 +161,20 @@ function ProductRow({ product, index, onEdit, onToggle, onDelete }) {
       </div>
 
       <div className="ColumnaPrecioProducto">
-        <span className="ValorPrecioProducto">
-          ${Number(product.price).toLocaleString("es-CO", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-        </span>
+        {isDraftMode ? (
+          <input
+            className="Entrada EntradaDraft EntradaPrecioDraft"
+            type="number"
+            value={product.price}
+            onChange={(e) => onDraftChange(index, "price", e.target.value)}
+            min="0"
+            step="0.01"
+          />
+        ) : (
+          <span className="ValorPrecioProducto">
+            ${Number(product.price).toLocaleString("es-CO", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          </span>
+        )}
       </div>
 
       <div className="ColumnaFechaProducto ColumnasLista">
@@ -135,30 +184,34 @@ function ProductRow({ product, index, onEdit, onToggle, onDelete }) {
       </div>
 
       <div className="ColumnaAccionesProducto AccionesFila">
-        <button
-          className="BotonIcono"
-          title="Editar producto"
-          onClick={() => onEdit(index)}
-          aria-label="Editar"
-        >
-          <Icon.Edit />
-        </button>
-        <button
-          className={`BotonIcono AlternadorActivo ${product.active ? "Encendido" : ""}`}
-          title={product.active ? "Desactivar producto" : "Activar producto"}
-          onClick={() => onToggle(index)}
-          aria-label={product.active ? "Desactivar" : "Activar"}
-        >
-          <Icon.Toggle on={product.active} />
-        </button>
-        <button
-          className="BotonIcono Peligro"
-          title="Eliminar producto"
-          onClick={() => onDelete(index)}
-          aria-label="Eliminar"
-        >
-          <Icon.Trash />
-        </button>
+        {!isDraftMode && (
+          <>
+            <button
+              className="BotonIcono"
+              title="Editar producto"
+              onClick={() => onEdit(index)}
+              aria-label="Editar"
+            >
+              <Icon.Edit />
+            </button>
+            <button
+              className={`BotonIcono AlternadorActivo ${product.active ? "Encendido" : ""}`}
+              title={product.active ? "Desactivar producto" : "Activar producto"}
+              onClick={() => onToggle(index)}
+              aria-label={product.active ? "Desactivar" : "Activar"}
+            >
+              <Icon.Toggle on={product.active} />
+            </button>
+            <button
+              className="BotonIcono Peligro"
+              title="Eliminar producto"
+              onClick={() => onDelete(index)}
+              aria-label="Eliminar"
+            >
+              <Icon.Trash />
+            </button>
+          </>
+        )}
       </div>
     </div>
   );
@@ -356,18 +409,20 @@ function ConfirmModal({ config, onConfirm, onCancel }) {
 
 export default function MenuPage({ Sidebar }) {
   const [products, setProducts] = useState(() => loadProducts());
+  const [draftProducts, setDraftProducts] = useState(null);
+  const [pendingChanges, setPendingChanges] = useState(() => loadDraft());
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [productModal, setProductModal] = useState(null);
   const [confirmModal, setConfirmModal] = useState(null);
 
   const categories = useMemo(
-    () => [...new Set(products.map(p => p.category).filter(Boolean))].sort(),
-    [products]
+    () => [...new Set((draftProducts || products).map(p => p.category).filter(Boolean))].sort(),
+    [products, draftProducts]
   );
 
   const filtered = useMemo(() => {
-    let list = products.map((p, i) => ({ ...p, _idx: i }));
+    let list = (draftProducts || products).map((p, i) => ({ ...p, _idx: i }));
     if (categoryFilter !== "all") {
       list = list.filter(p => p.category === categoryFilter);
     }
@@ -379,11 +434,87 @@ export default function MenuPage({ Sidebar }) {
       );
     }
     return list;
-  }, [products, categoryFilter, searchTerm]);
+  }, [products, draftProducts, categoryFilter, searchTerm]);
 
   useEffect(() => {
     saveProducts(products);
   }, [products]);
+
+  const handleStartDraft = () => {
+    // Validar que haya productos antes de permitir cambios temporales
+    if (products.length === 0) {
+      alert("No hay productos agregados al menú. Debe agregar al menos un producto antes de hacer cambios temporales.");
+      return;
+    }
+    setDraftProducts(pendingChanges ? JSON.parse(JSON.stringify(pendingChanges)) : JSON.parse(JSON.stringify(products)));
+  };
+
+  const handleSaveDraft = () => {
+    setConfirmModal({
+      config: {
+        title: "Guardar borrador",
+        message: "¿Estás seguro de que deseas guardar los cambios temporales? Quedarán almacenados como pendientes para ser aplicados más tarde.",
+        confirmLabel: "Guardar borrador",
+        danger: false,
+      },
+      action: () => {
+        const cleanDraft = draftProducts.map(p => ({
+          ...p,
+          price: parseFloat(p.price) || 0
+        }));
+        setPendingChanges(cleanDraft);
+        saveDraft(cleanDraft);
+        setDraftProducts(null);
+      }
+    });
+  };
+
+  const handleApplyDraft = () => {
+    setConfirmModal({
+      config: {
+        title: "Aplicar cambios pendientes",
+        message: "Esta acción reemplazará los productos del menú activo con las modificaciones del borrador guardado. ¿Deseas aplicar los cambios?",
+        confirmLabel: "Aplicar cambios",
+        danger: false,
+      },
+      action: () => {
+        setProducts(pendingChanges);
+        setPendingChanges(null);
+        saveDraft(null);
+      }
+    });
+  };
+
+  const handleCancelDraft = () => {
+    setConfirmModal({
+      config: {
+        title: "Cancelar pendientes",
+        message: "Esta acción eliminará de forma permanente todos los cambios pendientes guardados en el borrador. No se podrá deshacer. ¿Deseas descartarlos?",
+        confirmLabel: "Eliminar borrador",
+        danger: true,
+      },
+      action: () => {
+        setPendingChanges(null);
+        saveDraft(null);
+        setDraftProducts(null);
+      }
+    });
+  };
+
+  const handleCancelEdit = () => {
+    setDraftProducts(null);
+  };
+
+  const handleDraftChange = (index, field, value) => {
+    setDraftProducts(prev => {
+      const copy = [...prev];
+      copy[index] = { ...copy[index], [field]: value };
+      return copy;
+    });
+  };
+
+  const isDraftMode = draftProducts !== null;
+  const hasPendingChanges = pendingChanges !== null && draftProducts === null;
 
   const openAdd = useCallback(() => {
     setProductModal({ product: null, index: null });
@@ -395,30 +526,29 @@ export default function MenuPage({ Sidebar }) {
 
   const handleSaveProduct = useCallback((formData) => {
     const { product, index } = productModal;
-    const config = index !== null
-      ? {
-          title: "Confirmar edición",
-          message: "¿Guardar los cambios en este producto?",
-          productName: formData.name,
-          confirmLabel: "Guardar",
-          danger: false,
-        }
-      : {
-          title: "Agregar producto",
-          message: "¿Confirmas que deseas agregar este producto al menú?",
-          productName: formData.name,
-          confirmLabel: "Agregar",
-          danger: false,
-        };
+    
+    if (index === null) {
+      setProducts(prev => {
+        const copy = [...prev];
+        copy.push({ ...formData, active: true, created: Date.now() });
+        return copy;
+      });
+      setProductModal(null);
+      return;
+    }
+
+    const config = {
+      title: "Confirmar edición",
+      message: "¿Guardar los cambios en este producto?",
+      productName: formData.name,
+      confirmLabel: "Guardar",
+      danger: false,
+    };
 
     const action = () => {
       setProducts(prev => {
         const copy = [...prev];
-        if (index !== null) {
-          copy[index] = { ...product, ...formData };
-        } else {
-          copy.push({ ...formData, active: true, created: Date.now() });
-        }
+        copy[index] = { ...product, ...formData };
         return copy;
       });
       setProductModal(null);
@@ -500,37 +630,71 @@ export default function MenuPage({ Sidebar }) {
       <main className="MenuPrincipal">
         <header className="CabeceraMenu">
           <div className="FilaCabeceraFlex">
-            <div>
-              <h1 className="TituloMenu">Gestión de Menú</h1>
-              <div className="FilaEstadisticas">
-                <span className="EtiquetaEstadistica">
-                  <strong>{products.length}</strong> productos
-                </span>
-                <span className="EtiquetaEstadisticaActiva">
-                  <strong>{activeCount}</strong> activos
-                </span>
-                {inactiveCount > 0 && (
+            {!hasPendingChanges && (
+              <div>
+                <h1 className="TituloMenu">Gestión de Menú</h1>
+                <div className="FilaEstadisticas">
                   <span className="EtiquetaEstadistica">
-                    <strong>{inactiveCount}</strong> inactivos
+                    <strong>{products.length}</strong> productos
                   </span>
-                )}
+                  <span className="EtiquetaEstadisticaActiva">
+                    <strong>{activeCount}</strong> activos
+                  </span>
+                  {inactiveCount > 0 && (
+                    <span className="EtiquetaEstadistica">
+                      <strong>{inactiveCount}</strong> inactivos
+                    </span>
+                  )}
+                </div>
               </div>
-            </div>
+            )}
 
             <div className="AccionesCabeceraFlex">
-              <div className="ContenedorBuscador">
-                <span className="IconoBuscador"><Icon.Search /></span>
-                <input
-                  className="EntradaBuscador"
-                  type="text"
-                  placeholder="Buscar producto..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              </div>
-              <button className="BotonPrincipal busqueda" onClick={openAdd}>
-                <Icon.Plus /> Producto
-              </button>
+              {isDraftMode ? (
+                <>
+                  <button className="BotonPrincipal busqueda SaveTemp" onClick={handleSaveDraft}>
+                    <Icon.Check /> Guardar cambios temporales
+                  </button>
+                  <button className="BotonSecundario busqueda cancelar" onClick={handleCancelEdit}>
+                    Cancelar
+                  </button>
+                </>
+              ) : hasPendingChanges ? (
+                <>
+                  <button className="BotonPrincipal busqueda BotonExito" onClick={handleApplyDraft}>
+                    <Icon.Check /> Aplicar cambios pendientes
+                  </button>
+                  <button className="BotonSecundario busqueda BotonPeligro" onClick={handleCancelDraft}>
+                    <Icon.X /> Cancelar pendientes
+                  </button>
+                  <button className="BotonSecundario busqueda" onClick={handleStartDraft}>
+                    <Icon.Edit /> Editar pendientes
+                  </button>
+                </>
+              ) : (
+                <button className="BotonSecundario busqueda temporales" onClick={handleStartDraft}>
+                  <Icon.Edit /> Cambios temporales
+                </button>
+              )}
+
+              {!isDraftMode && (
+                <div className="ContenedorBuscador">
+                  <span className="IconoBuscador"><Icon.Search /></span>
+                  <input
+                    className="EntradaBuscador"
+                    type="text"
+                    placeholder="Buscar producto..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                </div>
+              )}
+
+              {!isDraftMode && !hasPendingChanges && (
+                <button className="BotonPrincipal busqueda" onClick={openAdd}>
+                  <Icon.Plus /> Producto
+                </button>
+              )}
             </div>
           </div>
 
@@ -570,16 +734,28 @@ export default function MenuPage({ Sidebar }) {
               )}
             </div>
           ) : (
-            filtered.map(product => (
-              <ProductRow
-                key={product._idx}
-                product={product}
-                index={product._idx}
-                onEdit={openEdit}
-                onToggle={requestToggle}
-                onDelete={requestDelete}
-              />
-            ))
+            filtered.map(product => {
+              const isPending = !!(
+                pendingChanges &&
+                pendingChanges[product._idx] &&
+                (pendingChanges[product._idx].name !== product.name ||
+                  parseFloat(pendingChanges[product._idx].price) !== parseFloat(product.price) ||
+                  (pendingChanges[product._idx].description || "") !== (product.description || ""))
+              );
+              return (
+                <ProductRow
+                  key={product._idx}
+                  product={product}
+                  index={product._idx}
+                  onEdit={openEdit}
+                  onToggle={requestToggle}
+                  onDelete={requestDelete}
+                  isDraftMode={isDraftMode}
+                  onDraftChange={handleDraftChange}
+                  isPending={isPending}
+                />
+              );
+            })
           )}
         </div>
       </main>
