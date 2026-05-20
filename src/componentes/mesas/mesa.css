@@ -1,40 +1,397 @@
-.mesa {
-    background: var(--bg);
-    border-radius: var(--radius-lg);
-    border: 2px solid var(--border-light);
-    padding: 10px 20px;
-    text-align: center;
-    cursor: pointer;
-    transition: var(--t);
-    user-select: none;
-    background: var(--red);
-    border-color: var(--red);
-    color: white;
+/* Layout General */
+.contenido-mesas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    padding: 24px;
     width: 100%;
-    max-width: 170px;
-    margin: 10px;
+    box-sizing: border-box;
+    align-items: flex-start;
 }
 
+/* Tarjeta de Mesa Minimalista y Adaptable */
+.mesa {
+    min-width: 320px; 
+    width: fit-content; /* Se adapta al contenido interno */
+    max-width: 100%; /* Evita desbordamiento en pantallas pequeñas */
+    min-height: 420px;
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    display: flex;
+    flex-direction: column;
+    color: #1e293b;
+    box-sizing: border-box;
+}
 
 .mesa .topbar {
-    width: 100%;
     display: flex;
     justify-content: space-between;
-    margin: 10px;
-
+    align-items: center;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 12px;
 }
 
 .mesa .id {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.671);
+    font-size: 13px;
+    font-weight: 700;
+    color: #94a3b8;
 }
 
-.mesa .cuentas {
-    font-size: 12px;
-    font-weight: bolder;
-    background-color: rgba(255, 255, 255, 0.267);
+.mesa .cuentas-badge {
+    font-size: 11px;
+    font-weight: 700;
+    background-color: #f1f5f9;
+    color: #475569;
+    border-radius: 6px;
+    padding: 4px 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Edicion y visualizacion del nombre */
+.mesa .content h3 {
+    margin: 0 0 4px 0;
+    font-size: 20px;
+    color: #0f172a;
+    font-weight: 700;
+    word-break: break-word; /* Permite que el nombre largo baje a otra linea */
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.mesa .content h3:hover {
+    color: var(--red, #d32f2f);
+}
+
+.edicion-nombre input {
+    font-size: 18px;
+    font-weight: 700;
+    color: #0f172a;
+    border: 1px solid var(--red, #d32f2f);
+    border-radius: 6px;
+    padding: 4px 8px;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 4px;
+    outline: none;
+}
+
+.mesa .content .monto-total {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--red, #d32f2f);
+    display: block;
+    margin-bottom: 16px;
+}
+
+/* Contenedor de Cuentas (Scroll inamovible) */
+.lista-cuentas-detallada {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+    max-height: 300px; 
+    overflow-y: auto; 
+    padding-right: 6px; 
+}
+
+.lista-cuentas-detallada::-webkit-scrollbar {
+    width: 4px;
+}
+.lista-cuentas-detallada::-webkit-scrollbar-track {
+    background: transparent;
+}
+.lista-cuentas-detallada::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
     border-radius: 10px;
-    padding: 2px;
-    padding-right: 4px;
-    padding-left: 4px;
+}
+
+.bloque-cuenta {
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 12px;
+    border: 1px solid #f1f5f9;
+}
+
+.header-cuenta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.header-cuenta h4 {
+    margin: 0;
+    font-size: 13px;
+    color: #334155;
+    font-weight: 700;
+}
+
+.acciones-cuenta {
+    display: flex;
+    gap: 6px;
+}
+
+.btn-add-plato {
+    background-color: transparent !important;
+    color: var(--red, #d32f2f) !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    padding: 2px 6px !important;
+    border: 1px solid var(--red, #d32f2f) !important;
+    border-radius: 4px !important;
+    cursor: pointer;
+}
+
+.btn-add-plato:hover {
+    background-color: #fef2f2 !important;
+}
+
+.btn-del-cuenta {
+    background-color: transparent !important;
+    color: #94a3b8 !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    padding: 2px 6px !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 4px !important;
+    cursor: pointer;
+}
+
+.btn-del-cuenta:hover {
+    color: var(--red, #d32f2f) !important;
+    border-color: var(--red, #d32f2f) !important;
+}
+
+.sin-platos {
+    font-size: 12px;
+    color: #94a3b8;
+    margin: 4px 0;
+}
+
+/* Resolucion de textos dentro de cuentas */
+.items-cuenta {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 10px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 8px;
+}
+
+.items-cuenta li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: #475569;
+    width: 100%;
+}
+
+.item-nombre {
+    flex: 1;
+    word-break: break-word; /* Permite saltos de linea si la palabra es enorme */
+    padding-right: 12px; /* Espacio para que no choque con el precio */
+}
+
+.item-derecha {
+    flex-shrink: 0; 
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.item-precio {
+    font-weight: 600;
+}
+
+.btn-del-plato {
+    background: transparent !important;
+    color: #cbd5e1 !important;
+    border: none !important;
+    font-size: 14px !important;
+    padding: 0 !important;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.btn-del-plato:hover {
+    color: var(--red, #d32f2f) !important;
+}
+
+.total-cuenta-fila {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #0f172a;
+    margin-top: 4px;
+}
+
+/* Botones Fijos Abajo */
+.acciones-mesa {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: auto; 
+}
+
+.btn-secundario {
+    flex: 1;
+    background-color: #f8fafc;
+    color: #334155;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 12px;
+    border: 1px solid #e2e8f0;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.btn-secundario:hover {
+    background-color: #f1f5f9;
+}
+
+.btn-eliminar-mesa {
+    background-color: #fef2f2 !important;
+    color: var(--red, #d32f2f) !important;
+    border-color: #fecaca !important;
+}
+
+.btn-eliminar-mesa:hover {
+    background-color: #fee2e2 !important;
+}
+
+/* Modal con Secciones Desplegables (Acordeon) */
+.modal-menu-platos, .modal-crear-mesa {
+    max-width: 420px !important;
+    width: 90%;
+    padding: 20px !important;
+    border-radius: 12px !important;
+    display: flex;
+    flex-direction: column;
+}
+
+.header-modal h3, .modal-crear-mesa h3 {
+    margin-top: 0;
+    margin-bottom: 16px;
+    font-size: 18px;
+    color: #0f172a;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 12px;
+}
+
+.contenido-modal-scroll {
+    max-height: 60vh;
+    overflow-y: auto;
+    padding-right: 8px;
+    margin-bottom: 16px;
+}
+
+.contenido-modal-scroll::-webkit-scrollbar {
+    width: 4px;
+}
+.contenido-modal-scroll::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 4px;
+}
+
+.menu-seccion {
+    margin-bottom: 10px;
+    background: #f8fafc;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+}
+
+/* Estilos de la barra pulsable */
+.header-seccion-menu {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 14px;
+    cursor: pointer;
+    background-color: #f8fafc;
+    transition: background-color 0.2s;
+}
+
+.header-seccion-menu:hover {
+    background-color: #f1f5f9;
+}
+
+.titulo-seccion-menu {
+    font-size: 13px;
+    color: #334155;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 0;
+    font-weight: 700;
+}
+
+.icono-desplegable {
+    font-size: 18px;
+    color: #94a3b8;
+    line-height: 1;
+}
+
+.grid-menu-seleccion {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 0 14px 14px 14px;
+}
+
+.tarjeta-plato-seleccion {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 10px 14px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: border-color 0.2s ease;
+}
+
+.tarjeta-plato-seleccion:hover {
+    border-color: var(--red, #d32f2f);
+    background: #fef2f2;
+}
+
+.plato-nombre {
+    font-size: 13px;
+    font-weight: 600;
+    color: #334155;
+    flex: 1;
+    word-break: break-word; /* Salto de linea si el menu tiene items largos */
+    padding-right: 12px;
+}
+
+.plato-precio {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--red, #d32f2f);
+    flex-shrink: 0;
+}
+
+.btn-cerrar {
+    background-color: #ffffff !important;
+    color: #475569 !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 8px;
+    padding: 10px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    width: 100%;
+}
+
+.btn-cerrar:hover {
+    background-color: #f8fafc !important;
 }
