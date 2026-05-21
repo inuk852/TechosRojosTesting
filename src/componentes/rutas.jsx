@@ -3,6 +3,7 @@ import Login from "../paginas/Login";
 import Mesas from "../paginas/Mesas";
 import Tarjeta from "./tarjeta/tarjeta";
 import Sidebar from "./sidebar/sidebar";
+import Rapido from "./rapidos/rapidos";
 import { useState } from "react";
 
 function Rutas() {
@@ -11,7 +12,7 @@ function Rutas() {
 	const [logeado, setLogeado] = useState(false)
 
 	function onLogin() {
-		navigate("/mesas")
+		navigate("/rapidos")
 		setLogeado(true)
 	}
 
@@ -25,7 +26,7 @@ function Rutas() {
 		<Sidebar />
 		<div className="contenido">
 			<Routes>
-				<Route path="/mesas" element={<Mesas />} />
+				<Route path="/rapidos" element={<Rapido />} />
 			</Routes>
 		</div>
 	</>
