@@ -1,29 +1,29 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Noto+Serif+SC:wght@400;600;700&family=Quicksand:wght@400;500;600;700&display=swap');
 
 :root {
-  --red:          #b41800;
-  --red-hover:    #961400;
-  --red-dark:     #7e1100;
-  --red-soft:     #fae8e5;
-  --red-ghost:    rgba(180, 24, 0, 0.08);
-  --bg:           #ffffff;
-  --bg-soft:      #fdfaf9;
-  --bg-muted:     #f5f0ee;
-  --ink:          #1a1a1a;
-  --ink-soft:     #4a4540;
-  --muted:        #9a8f89;
-  --border:       rgba(180, 24, 0, 0.18);
+  --red: #b41800;
+  --red-hover: #961400;
+  --red-dark: #7e1100;
+  --red-soft: #fae8e5;
+  --red-ghost: rgba(180, 24, 0, 0.08);
+  --bg: #ffffff;
+  --bg-soft: #fdfaf9;
+  --bg-muted: #f5f0ee;
+  --ink: #1a1a1a;
+  --ink-soft: #4a4540;
+  --muted: #9a8f89;
+  --border: rgba(180, 24, 0, 0.18);
   --border-light: rgba(180, 24, 0, 0.10);
-  --radius:       14px;
-  --radius-lg:    20px;
-  --radius-xl:    28px;
-  --shadow-sm:    0 1px 3px rgba(60, 20, 10, 0.07);
-  --shadow-md:    0 6px 20px rgba(60, 20, 10, 0.10);
-  --shadow-lg:    0 16px 48px rgba(60, 20, 10, 0.14);
-  --font-body:    'DM Sans', system-ui, sans-serif;
+  --radius: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --shadow-sm: 0 1px 3px rgba(60, 20, 10, 0.07);
+  --shadow-md: 0 6px 20px rgba(60, 20, 10, 0.10);
+  --shadow-lg: 0 16px 48px rgba(60, 20, 10, 0.14);
+  --font-body: 'DM Sans', system-ui, sans-serif;
   --font-display: 'Noto Serif SC', serif;
-  --font-ui:      'Quicksand', sans-serif;
-  --transition:   .2s cubic-bezier(.4, 0, .2, 1);
+  --font-ui: 'Quicksand', sans-serif;
+  --transition: .2s cubic-bezier(.4, 0, .2, 1);
 }
 
 /* Ocultar selectores numéricos nativos en navegadores (Desktop & Tablet) */
@@ -32,6 +32,7 @@ input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
 input[type="number"] {
   -moz-appearance: textfield;
 }
@@ -60,10 +61,12 @@ input[type="number"] {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 18px; /* Mayor espaciado táctil */
+  padding: 12px 18px;
+  /* Mayor espaciado táctil */
   border-bottom: 1px solid var(--border-light);
   background: var(--bg);
-  min-height: 58px; /* Aumentado de 52px para guías de accesibilidad táctil */
+  min-height: 58px;
+  /* Aumentado de 52px para guías de accesibilidad táctil */
   transition: background var(--transition), box-shadow var(--transition);
   -webkit-tap-highlight-color: transparent;
 }
@@ -73,7 +76,8 @@ input[type="number"] {
 }
 
 .ContenedorFilaProducto:active {
-  background: var(--bg-muted) !important; /* Feedback inmediato al tocar fila */
+  background: var(--bg-muted) !important;
+  /* Feedback inmediato al tocar fila */
 }
 
 .ContenedorFilaProducto.Inactivo {
@@ -85,8 +89,10 @@ input[type="number"] {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 38px; /* Aumentado de 32px */
-  height: 38px; /* Aumentado de 32px */
+  width: 38px;
+  /* Aumentado de 32px */
+  height: 38px;
+  /* Aumentado de 32px */
   border-radius: 10px;
   border: 1.5px solid var(--border-light);
   background: var(--bg);
@@ -105,7 +111,8 @@ input[type="number"] {
 }
 
 .BotonIcono:active {
-  transform: scale(0.92); /* Retroalimentación táctil de pulsación */
+  transform: scale(0.92);
+  /* Retroalimentación táctil de pulsación */
   background: var(--border-light);
 }
 
@@ -160,7 +167,8 @@ input[type="number"] {
 
 .Entrada {
   width: 100%;
-  padding: .8rem 1.1rem; /* Mayor padding para interacción táctil fluida */
+  padding: .8rem 1.1rem;
+  /* Mayor padding para interacción táctil fluida */
   border: 1.5px solid var(--border-light);
   background: var(--bg);
   border-radius: var(--radius);
@@ -188,13 +196,25 @@ input[type="number"] {
 
 /* Animaciones del modal */
 @keyframes tr-fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes tr-pop {
-  0%   { transform: scale(.9) translateY(-10px); opacity: 0; }
-  100% { transform: scale(1) translateY(0); opacity: 1; }
+  0% {
+    transform: scale(.9) translateY(-10px);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
 }
 
 .CapaSuperpuesta {
@@ -239,7 +259,8 @@ input[type="number"] {
   align-items: center;
   justify-content: center;
   gap: .5rem;
-  padding: 0 1.6rem; /* Aumentado para dar mínimo 44px altura táctil */
+  padding: 0 1.6rem;
+  /* Aumentado para dar mínimo 44px altura táctil */
   height: 60px;
   background: var(--red);
   color: white;
@@ -251,7 +272,8 @@ input[type="number"] {
   cursor: pointer;
   transition: all var(--transition);
   box-shadow: 0 4px 12px rgba(180, 24, 0, 0.22);
-  min-height: 46px; /* Cumple guías táctiles Apple/Android */
+  min-height: 46px;
+  /* Cumple guías táctiles Apple/Android */
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -265,7 +287,8 @@ input[type="number"] {
 }
 
 .BotonPrincipal:active {
-  transform: scale(0.96) translateY(0); /* Feedback inmediato al pulsar */
+  transform: scale(0.96) translateY(0);
+  /* Feedback inmediato al pulsar */
   background: var(--red-dark);
 }
 
@@ -317,18 +340,20 @@ input[type="number"] {
   -webkit-tap-highlight-color: transparent;
 }
 
-.cancelar{
+.cancelar {
   height: 60px;
 }
 
-.temporales{
+
+.temporales {
   margin-left: -50px;
   margin-right: 30px;
   height: 60px;
   width: 200px;
 }
 
-.SaveTemp{
+
+.SaveTemp {
   margin-left: -50px;
   height: 60px;
   display: flex;
@@ -338,12 +363,12 @@ input[type="number"] {
   gap: 10px;
 }
 
-.SaveTemp > svg{
+.SaveTemp>svg {
   height: 25px;
   width: 25px;
 }
 
-.temporales > svg{
+.temporales>svg {
   height: 20px;
   width: 20px;
 }
@@ -365,7 +390,8 @@ input[type="number"] {
 
 /* Píldora de categoría */
 .PildoraCategoria {
-  padding: .5rem 1.1rem; /* Aumentado de .35rem .9rem para tablets */
+  padding: .5rem 1.1rem;
+  /* Aumentado de .35rem .9rem para tablets */
   border-radius: 999px;
   border: 1.5px solid var(--border-light);
   font-size: .8rem;
@@ -376,7 +402,8 @@ input[type="number"] {
   background: var(--bg);
   color: var(--ink-soft);
   white-space: nowrap;
-  min-height: 38px; /* Mejor puntería táctil */
+  min-height: 38px;
+  /* Mejor puntería táctil */
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -493,7 +520,8 @@ input[type="number"] {
   color: var(--ink);
   transition: all var(--transition);
   outline: none;
-  min-height: 44px; /* Altura táctil ideal */
+  min-height: 44px;
+  /* Altura táctil ideal */
 }
 
 .EntradaBuscador:focus {
@@ -503,33 +531,57 @@ input[type="number"] {
 }
 
 .ContenedorFiltroCategorias {
-  max-width: 250px;
   margin-top: 1.1rem;
-  overflow-y: hidden;
-
 }
 
-/* Contenedor del filtro */
-.ContenedorFiltroCategoria {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 15px;
-  overflow-x: auto;
-  white-space: nowrap;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none; /* Firefox */
-  padding-bottom: 6px;
+/* Select de categoría */
+.SelectCategoria {
+  padding: 0.6rem 1.1rem;
+  border-radius: var(--radius);
+  border: 1.5px solid var(--border-light);
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--ink);
+  cursor: pointer;
+  transition: all var(--transition);
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234a4540' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.7rem center;
+  background-size: 1.2em 1.2em;
+  padding-right: 2.5rem;
+  min-width: 200px;
+  margin-bottom: 1rem;
 }
 
-.ContenedorFiltroCategoria::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
+.SelectCategoria:hover {
+  border-color: var(--red);
+  box-shadow: 0 0 0 3px rgba(180, 24, 0, 0.08);
+}
+
+.SelectCategoria:focus {
+  outline: none;
+  border-color: var(--red);
+  box-shadow: 0 0 0 3px rgba(180, 24, 0, 0.1);
+}
+
+.SelectCategoria option {
+  background: var(--bg);
+  color: var(--ink);
+  padding: 0.5rem;
+  border-radius: var(--radius);
 }
 
 /* Tabla y área de scroll */
 .VistaDesplazableLista {
   flex: 1;
   overflow-y: auto;
-  -webkit-overflow-scrolling: touch; /* Momentum scrolling super suave en iPads/tablets */
+  -webkit-overflow-scrolling: touch;
+  /* Momentum scrolling super suave en iPads/tablets */
 }
 
 .CabeceraColumnasLista {
@@ -574,7 +626,8 @@ input[type="number"] {
 
 .EspaciadorAccionesLista {
   flex-shrink: 0;
-  width: 132px; /* Alineado al nuevo ancho de los botones de acción */
+  width: 132px;
+  /* Alineado al nuevo ancho de los botones de acción */
 }
 
 /* Elementos de fila de producto */
@@ -599,7 +652,7 @@ input[type="number"] {
 
 .ColumnaNombreProducto {
   flex: 2 1 160px;
-  min-width: 100px;
+  min-width: 500px;
   max-width: 500px;
 
 }
@@ -629,6 +682,7 @@ input[type="number"] {
   display: flex;
   flex: 1 1 100px;
   min-width: 0;
+  max-width: 555px;
 }
 
 .EtiquetaCategoriaProducto {
@@ -828,82 +882,191 @@ input[type="number"] {
 }
 
 /* ==========================================
-   Soporte Responsive Premium y Multidispositivo
+    Soporte Responsive Premium y Multidispositivo
    ========================================== */
 
-/* Reglas para Pantallas Medianas (Tablets en Landscape / Computadores Pequeños, <= 1024px) */
-@media (max-width: 1366px) and (max-height: 1024px) {
+/* Tablets en Landscape / Computadores Pequeños (1024px - 1366px) */
+@media (max-width: 1366px) and (min-width: 1024px) {
   .CabeceraMenu {
-    width: 100%;
     padding: 1rem 1.5rem;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: flex-start;
-    height: auto; /* Permite altura adaptativa en tablets y pantallas medianas */
-    min-height: 75px;
-    gap: 0.75rem;
   }
+
   .FilaCabeceraFlex {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     gap: 1.5rem;
-    width: 100%;
   }
+
+  .EtiquetaColumnaFlex2 {
+    max-width: 200px;
+  }
+
   .CabeceraColumnasLista {
     padding: 10px 14px;
   }
+
   .ContenedorFilaProducto {
     padding: 10px 14px;
   }
+
   .ColumnaFechaProducto,
   .EtiquetaColumnaAncho90 {
-    display: none !important; /* Oculta fecha en tablets para mayor desahogo espacial */
+    display: none !important;
   }
+
   .EspaciadorAccionesLista {
     width: 132px;
   }
 }
 
-/* Reglas para Pantallas Medianas/Pequeñas (Tablets en Portrait / Tablets de 7", <= 800px) */
-@media (max-width: 800px) {
+/* Tablets en Portrait (769px - 1024px) */
+@media (max-width: 1024px) {
   .FilaCabeceraFlex {
     flex-direction: column;
     align-items: stretch;
     gap: 1rem;
   }
+
   .AccionesCabeceraFlex {
     width: 100%;
     justify-content: space-between;
   }
+
   .ContenedorBuscador {
-    flex: 1; /* El buscador aprovecha todo el espacio disponible al lado del botón */
+    flex: 1;
     min-width: 150px;
+  }
+
+  .CabeceraMenu {
+    padding: 1rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    height: auto;
+    min-height: 75px;
+    gap: 0.75rem;
+  }
+
+  .CabeceraColumnasLista {
+    padding: 10px 14px;
+  }
+
+  .ContenedorFilaProducto {
+    padding: 10px 14px;
+  }
+
+  .ColumnaFechaProducto,
+  .EtiquetaColumnaAncho90 {
+    display: none !important;
+  }
+
+  .EspaciadorAccionesLista {
+    width: 132px;
   }
 }
 
-/* Reglas para Pantallas Pequeñas (Celulares / Dispositivos Móviles, <= 640px) */
+/* Tablets pequeños / Híbridos (641px - 768px) */
+@media (max-width: 768px) {
+  .ContenedorBuscador {
+    width: 100%;
+    min-width: auto;
+  }
+
+  .BotonPrincipal {
+    width: 100%;
+  }
+
+  .CabeceraMenu {
+    padding: 1rem;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .FilaCabeceraFlex {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .AccionesCabeceraFlex {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .CabeceraColumnasLista {
+    display: none !important;
+  }
+
+  .ContenedorFilaProducto {
+    flex-wrap: wrap !important;
+    padding: 12px !important;
+    gap: 8px !important;
+  }
+
+  .ColumnaNombreProducto {
+    flex: 1 1 100% !important;
+  }
+
+  .TextoNombreProducto {
+    font-size: 0.95rem !important;
+  }
+
+  .ColumnaCategoriaProducto {
+    flex: 0 0 auto !important;
+  }
+
+  .ColumnaPrecioProducto {
+    flex: 0 0 auto !important;
+    text-align: right !important;
+  }
+
+  .ColumnaFechaProducto {
+    display: none !important;
+  }
+
+  .ColumnaAccionesProducto {
+    flex: 1 1 100% !important;
+    justify-content: flex-end;
+    gap: 8px !important;
+  }
+
+  .BotonIcono {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+  }
+}
+
+/* Celulares / Dispositivos Móviles (<= 640px) */
 @media (max-width: 640px) {
   .CabeceraMenu {
     padding: 1rem;
+    flex-direction: column;
   }
+
+  .TituloMenu {
+    font-size: 1.3rem;
+  }
+
   .AccionesCabeceraFlex {
-    flex-direction: column-reverse; /* El botón queda arriba para facilitar clics */
+    flex-direction: column-reverse;
     align-items: stretch;
+    gap: 0.75rem;
   }
+
   .ContenedorBuscador {
     width: 100%;
+    min-width: auto;
   }
+
   .BotonPrincipal {
-    width: 100%; /* Botón gigante full-width ideal para pulgares en móviles */
+    width: 100%;
+    height: 50px;
+    font-size: 0.9rem;
   }
-  
-  /* Conversión de Tabla a Tarjetas Apiladas */
+
   .CabeceraColumnasLista {
-    display: none !important; /* Oculta la cabecera rígida de la tabla */
+    display: none !important;
   }
-  
+
   .ContenedorFilaProducto {
     flex-wrap: wrap !important;
     padding: 16px 14px !important;
@@ -913,38 +1076,64 @@ input[type="number"] {
     border: 1.5px solid var(--border-light);
     box-shadow: var(--shadow-sm);
   }
-  
+
+  .ColumnaPuntoProducto {
+    flex: 0 0 8px;
+  }
+
   .ColumnaNombreProducto {
-    flex: 1 1 100% !important; /* El nombre y descripción ocupan toda la primera línea */
+    flex: 1 1 100% !important;
+    min-width: 100% !important;
   }
-  
+
   .TextoNombreProducto {
-    font-size: 1rem !important;
-    white-space: normal !important; /* Permite saltar de línea para no cortar nombres largos */
+    font-size: 0.95rem !important;
+    white-space: normal !important;
   }
-  
+
+  .TextoDescripcionProducto {
+    font-size: 0.75rem !important;
+  }
+
   .ColumnaCategoriaProducto {
-    flex: 0 0 auto !important; /* El badge de categoría se alinea a la izquierda abajo */
+    flex: 0 0 auto !important;
+    order: -1;
   }
-  
+
   .ColumnaPrecioProducto {
     flex: 1 1 auto !important;
-    text-align: right !important; /* El precio se sitúa abajo a la derecha */
+    text-align: right !important;
+    order: -1;
   }
-  
+
+  .ColumnaFechaProducto {
+    display: none !important;
+  }
+
   .ColumnaAccionesProducto {
-    flex: 1 1 100% !important; /* Las acciones ocupan toda la línea inferior de la tarjeta */
+    flex: 1 1 100% !important;
     justify-content: flex-end;
     margin-top: 10px;
     padding-top: 10px;
     border-top: 1px dashed var(--border-light);
-    gap: 12px !important; /* Más separación entre botones táctiles */
+    gap: 6px !important;
+    order: 1;
   }
 
   .BotonIcono {
-    width: 44px; /* Botones más amplios en móviles para evitar toques erróneos */
+    width: 44px;
     height: 44px;
-    font-size: 18px;
+    font-size: 16px;
+  }
+
+  .EntradaBuscador {
+    min-height: 40px;
+    font-size: 0.9rem;
+  }
+
+  .BotonSecundario {
+    height: 50px;
+    font-size: 0.9rem;
   }
 }
 
@@ -968,6 +1157,61 @@ input[type="number"] {
   text-align: right;
   width: 90px;
   margin-left: auto;
+
+  .SelectCategoriaDraft {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%234a4540' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    padding-right: 28px;
+  }
+}
+
+.SelectCategoriaDraft::-ms-expand {
+  display: none;
+}
+
+.InputCategoriaConSugerencias {
+  position: relative;
+  width: 80%;
+  z-index: 1;
+}
+
+.InputCategoriaDraft {
+  width: 65%;
+  position: relative;
+  z-index: 2;
+}
+
+.ListaSugerenciasCategoria {
+  position: fixed;
+  background: #ffffff00;
+  border: 1px solid rgba(255, 255, 255, 0);
+  border-radius: var(--radius, 14px);
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 11;
+  box-shadow: var(--shadow-md, 0 6px 20px rgba(60, 20, 10, 0.10));
+  min-width: 250px;
+}
+
+.SugerenciaCategoria {
+  padding: 8px 12px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border-light, rgba(180, 24, 0, 0.10));
+  font-size: 0.85rem;
+  transition: background-color var(--transition, 0.2s cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+.SugerenciaCategoria:last-child {
+  border-bottom: none;
+}
+
+.SugerenciaCategoria:hover {
+  background-color: var(--red-soft, #fae8e5);
+  color: var(--red, #b41800);
+  font-weight: 500;
 }
 
 .FilaPendiente {

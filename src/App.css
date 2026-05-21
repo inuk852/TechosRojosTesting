@@ -15,6 +15,7 @@ body {
 
 main {
   display: flex;
+  overflow-y: hidden;
 }
 
 main > .contenido {

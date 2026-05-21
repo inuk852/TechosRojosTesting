@@ -1,5 +1,7 @@
-import { useState, useMemo, useEffect, useCallback } from "react";
+import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import "./MenuPage.css";
+import MultiSelectChip from "./MultiSelectChip";
+
 
 const LS_KEY = "tr_menu_products";
 const LS_DRAFT_KEY = "tr_menu_draft";
@@ -90,29 +92,42 @@ const Icon = {
   ),
 };
 
+function formatPrice(value) {
+  // Solo mantiene dígitos
+  let numero = String(value).replace(/\D/g, "");
+  // Formatea con separador de miles
+  if (numero) {
+    numero = new Intl.NumberFormat("es-CO").format(numero);
+  }
+  return numero ? `$ ${numero}` : "";
+}
+
 function CategoryFilter({ categories, selected, onChange }) {
   return (
-    <div className="ContenedorFiltroCategoria">
-      <button
-        className={`PildoraCategoria ${selected === "all" ? "Activo" : ""}`}
-        onClick={() => onChange("all")}
-      >
-        Todas
-      </button>
-      {categories.map(cat => (
-        <button
-          key={cat}
-          className={`PildoraCategoria ${selected === cat ? "Activo" : ""}`}
-          onClick={() => onChange(cat)}
-        >
-          {cat}
-        </button>
-      ))}
-    </div>
+    <MultiSelectChip
+      options={categories}
+      value={selected}
+      onChange={onChange}
+      placeholder="Selecciona categorías..."
+    />
   );
 }
 
-function ProductRow({ product, index, onEdit, onToggle, onDelete, isDraftMode, onDraftChange, isPending }) {
+function ProductRow({ product, index, onEdit, onToggle, onDelete, isDraftMode, onDraftChange, isPending, categories = [] }) {
+  const inputRef = useRef(null);
+  const [inputPos, setInputPos] = useState({ top: 0, left: 0, width: 0 });
+
+  useEffect(() => {
+    if (isDraftMode && inputRef.current) {
+      const rect = inputRef.current.getBoundingClientRect();
+      setInputPos({
+        top: rect.bottom + window.scrollY,
+        left: rect.left + window.scrollX,
+        width: rect.width,
+      });
+    }
+  }, [isDraftMode, product.category]);
+
   const date = new Date(product.created || Date.now()).toLocaleDateString("es-CO", {
     day: "2-digit", month: "short", year: "numeric"
   });
@@ -154,21 +169,64 @@ function ProductRow({ product, index, onEdit, onToggle, onDelete, isDraftMode, o
         )}
       </div>
 
-      <div className="ColumnaCategoriaProducto ColumnasLista">
-        <span className="EtiquetaCategoriaProducto">
-          {product.category}
-        </span>
+      <div className="ColumnaCategoriaProducto ColumnasLista categoria">
+        {isDraftMode ? (
+          <div className="InputCategoriaConSugerencias">
+            <input
+              ref={inputRef}
+              className="Entrada EntradaDraft InputCategoriaDraft"
+              type="text"
+              value={product.category}
+              onChange={(e) => onDraftChange(index, "category", e.target.value)}
+              placeholder="Categoría"
+              autoComplete="off"
+            />
+            {product.category && categories.length > 0 && (
+              <div
+                className="ListaSugerenciasCategoria"
+                style={{
+                  top: `${inputPos.top}px`,
+                  left: `${inputPos.left}px`,
+                  width: `${inputPos.width}px`,
+                }}
+              >
+                {categories
+                  .filter(cat => 
+                    cat.toLowerCase().includes(product.category.toLowerCase()) &&
+                    cat !== product.category
+                  )
+                  .slice(0, 4)
+                  .map(cat => (
+                    <div
+                      key={cat}
+                      className="SugerenciaCategoria"
+                      onClick={() => onDraftChange(index, "category", cat)}
+                    >
+                      {cat}
+                    </div>
+                  ))}
+              </div>
+            )}
+          </div>
+        ) : (
+          <span className="EtiquetaCategoriaProducto">
+            {product.category}
+          </span>
+        )}
       </div>
 
       <div className="ColumnaPrecioProducto">
         {isDraftMode ? (
           <input
             className="Entrada EntradaDraft EntradaPrecioDraft"
-            type="number"
-            value={product.price}
-            onChange={(e) => onDraftChange(index, "price", e.target.value)}
-            min="0"
-            step="0.01"
+            type="text"
+            value={product.price ? `$ ${Number(product.price).toLocaleString("es-CO")}` : ""}
+            onChange={(e) => {
+              // Extrae solo números del input
+              const soloNumeros = e.target.value.replace(/\D/g, "");
+              onDraftChange(index, "price", soloNumeros);
+            }}
+            placeholder="$ Precio"
           />
         ) : (
           <span className="ValorPrecioProducto">
@@ -411,7 +469,7 @@ export default function MenuPage({ Sidebar }) {
   const [products, setProducts] = useState(() => loadProducts());
   const [draftProducts, setDraftProducts] = useState(null);
   const [pendingChanges, setPendingChanges] = useState(() => loadDraft());
-  const [categoryFilter, setCategoryFilter] = useState("all");
+  const [categoryFilter, setCategoryFilter] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [productModal, setProductModal] = useState(null);
   const [confirmModal, setConfirmModal] = useState(null);
@@ -423,8 +481,8 @@ export default function MenuPage({ Sidebar }) {
 
   const filtered = useMemo(() => {
     let list = (draftProducts || products).map((p, i) => ({ ...p, _idx: i }));
-    if (categoryFilter !== "all") {
-      list = list.filter(p => p.category === categoryFilter);
+    if (categoryFilter.length > 0) {
+      list = list.filter(p => categoryFilter.includes(p.category));
     }
     if (searchTerm.trim() !== "") {
       const query = searchTerm.toLowerCase().trim();
@@ -593,8 +651,8 @@ export default function MenuPage({ Sidebar }) {
       },
       action: () => {
         setProducts(prev => prev.filter((_, i) => i !== idx));
-        if (categoryFilter !== "all" && products.filter(p => p.category === categoryFilter).length <= 1) {
-          setCategoryFilter("all");
+        if (categoryFilter.length > 0 && products.filter(p => categoryFilter.includes(p.category)).length === 0) {
+          setCategoryFilter([]);
         }
       },
     });
@@ -753,6 +811,7 @@ export default function MenuPage({ Sidebar }) {
                   isDraftMode={isDraftMode}
                   onDraftChange={handleDraftChange}
                   isPending={isPending}
+                  categories={categories}
                 />
               );
             })
