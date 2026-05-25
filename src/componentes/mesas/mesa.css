@@ -1,40 +1,535 @@
-.mesa {
-    background: var(--bg);
-    border-radius: var(--radius-lg);
-    border: 2px solid var(--border-light);
-    padding: 10px 20px;
-    text-align: center;
+/* ══════════════════════════════════════════════
+   PÁGINA
+══════════════════════════════════════════════ */
+
+/* FIX ─ espacio para no quedar pegado al sidebar/header */
+.mesas-page {
+    padding: 28px 32px;
+    background: #f8fafc;
+    min-height: 100%;
+    box-sizing: border-box;
+}
+
+.mesas-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.mesas-titulo {
+    font-size: 22px;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+}
+
+/* FIX ─ botón Agregar mesa (estaba faltando) */
+.btn-agregar-mesa {
+    background-color: var(--red, #d32f2f);
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 9px 18px;
+    border: none;
+    border-radius: 8px;
     cursor: pointer;
-    transition: var(--t);
-    user-select: none;
-    background: var(--red);
-    border-color: var(--red);
-    color: white;
-    width: 100%;
-    max-width: 170px;
-    margin: 10px;
+    transition: background-color 0.2s;
+}
+.btn-agregar-mesa:hover {
+    background-color: #b71c1c;
+}
+
+/* grid de tarjetas */
+.contenido-mesas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: flex-start;
+    align-content: flex-start;
+}
+
+/* ══════════════════════════════════════════════
+   TARJETA MESA
+   FIX ─ ancho fijo, NO crece con el contenido
+══════════════════════════════════════════════ */
+.mesa {
+    min-width: 280px;
+    max-width: 280px;
+    width: 280px;
+
+    height: fit-content;
+
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+    box-sizing: border-box;
+    overflow: hidden;
+
+    transition:
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+.mesa-expandida {
+    height: auto;
+    min-height: 420px;
+}
+
+.mesa:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.09);
 }
 
 
-.mesa .topbar {
+
+/* ── Topbar pulsable (siempre visible) ── */
+.mesa-topbar-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    cursor: pointer;
+    user-select: none;
+    border-bottom: 1px solid #f1f5f9;
+    background: #fff;
+    transition: background 0.15s;
+}
+.mesa-topbar-btn:hover {
+    background: #f8fafc;
+}
+
+.mesa-topbar-izq {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.mesa-topbar-der {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.id {
+    font-size: 12px;
+    font-weight: 700;
+    color: #94a3b8;
+}
+
+/* FIX ─ nombre visible en la tarjeta colapsada */
+.mesa-nombre-chip {
+    font-size: 14px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.cuentas-badge {
+    font-size: 11px;
+    font-weight: 700;
+    background-color: #f1f5f9;
+    color: #475569;
+    border-radius: 6px;
+    padding: 3px 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.mesa-chevron {
+    font-size: 9px;
+    color: #94a3b8;
+}
+
+/* ── Body del contenido expandido ── */
+.mesa-body {
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    /* FIX ─ altura máxima para que la tarjeta no se desborde */
+    max-height: 500px;
+    overflow: visible;
+    min-height: 0;
+}
+
+/* nombre editable + total */
+.nombre-total-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    gap: 8px;
+}
+
+/* FIX ─ nombre grande y editable al click */
+.mesa-nombre-titulo {
+    margin: 0;
+    font-size: 18px;
+    color: #0f172a;
+    font-weight: 700;
+    cursor: pointer;
+    transition: color 0.2s;
+    flex: 1;
+    min-width: 0;
+    word-break: break-word;
+}
+.mesa-nombre-titulo:hover {
+    color: var(--red, #d32f2f);
+}
+
+.edicion-nombre-input {
     width: 100%;
+    font-size: 17px;
+    font-weight: 700;
+    color: #0f172a;
+    border: 1.5px solid var(--red, #d32f2f);
+    border-radius: 6px;
+    padding: 3px 8px;
+    flex: 1;
+    min-width: 0;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.monto-total {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--red, #d32f2f);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* ── Lista de cuentas con scroll ── */
+/* FIX ─ scroll interno; la tarjeta mantiene su tamaño */
+.lista-cuentas-detallada {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 12px;
+    padding-right: 4px;
+    max-height: 300px;   /* scroll a partir de aquí */
+    min-height: 0;
+}
+
+.lista-cuentas-detallada::-webkit-scrollbar { width: 4px; }
+.lista-cuentas-detallada::-webkit-scrollbar-track { background: transparent; }
+.lista-cuentas-detallada::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+
+/* ── Bloque de una cuenta ── */
+.bloque-cuenta {
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 10px 12px;
+    border: 1px solid #e2e8f0;
+    /* FIX ─ evita que rompa el ancho de la tarjeta */
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+.header-cuenta {
     display: flex;
     justify-content: space-between;
-    margin: 10px;
-
+    align-items: center;
+    margin-bottom: 8px;
 }
 
-.mesa .id {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.671);
+.header-cuenta h4 {
+    margin: 0;
+    font-size: 13px;
+    color: #334155;
+    font-weight: 700;
 }
 
-.mesa .cuentas {
+.acciones-cuenta {
+    display: flex;
+    gap: 5px;
+}
+
+.btn-add-plato {
+    background-color: transparent !important;
+    color: var(--red, #d32f2f) !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    padding: 2px 7px !important;
+    border: 1px solid var(--red, #d32f2f) !important;
+    border-radius: 4px !important;
+    cursor: pointer;
+}
+.btn-add-plato:hover { background-color: #fef2f2 !important; }
+
+.btn-del-cuenta {
+    background-color: transparent !important;
+    color: #94a3b8 !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    padding: 2px 7px !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 4px !important;
+    cursor: pointer;
+}
+.btn-del-cuenta:hover {
+    color: var(--red, #d32f2f) !important;
+    border-color: var(--red, #d32f2f) !important;
+}
+
+.sin-platos {
     font-size: 12px;
-    font-weight: bolder;
-    background-color: rgba(255, 255, 255, 0.267);
-    border-radius: 10px;
-    padding: 2px;
-    padding-right: 4px;
-    padding-left: 4px;
+    color: #94a3b8;
+    margin: 4px 0;
+}
+
+.items-cuenta {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 8px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 6px;
+}
+
+.items-cuenta li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: #475569;
+    min-width: 0;
+}
+
+.item-nombre {
+    flex: 1;
+    word-break: break-word;
+    padding-right: 10px;
+    min-width: 0;
+}
+
+.item-derecha {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.item-precio { font-weight: 600; }
+
+.btn-del-plato {
+    background: transparent !important;
+    color: #cbd5e1 !important;
+    border: none !important;
+    font-size: 14px !important;
+    padding: 0 2px !important;
+    cursor: pointer;
+    line-height: 1;
+}
+.btn-del-plato:hover { color: var(--red, #d32f2f) !important; }
+
+.total-cuenta-fila {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #0f172a;
+    margin-top: 4px;
+}
+
+/* ── Botones de la mesa ── */
+/* FIX ─ flex-wrap para que "Juntar Todo" no rompa la tarjeta */
+.acciones-mesa {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    flex-shrink: 0;
+}
+
+.btn-secundario {
+    flex: 1;
+    min-width: 80px;
+    background-color: #f8fafc;
+    color: #334155;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 12px;
+    border: 1px solid #e2e8f0;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s;
+}
+.btn-secundario:hover { background-color: #f1f5f9; }
+
+.btn-eliminar-mesa {
+    background-color: #fef2f2 !important;
+    color: var(--red, #d32f2f) !important;
+    border-color: #fecaca !important;
+}
+.btn-eliminar-mesa:hover { background-color: #fee2e2 !important; }
+
+/* ══════════════════════════════════════════════
+   MODAL MENÚ
+══════════════════════════════════════════════ */
+
+/* FIX ─ overlay que cierra al click fuera */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(2px);
+    animation: fadeIn 0.15s ease;
+}
+@keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+
+.modal-menu-platos {
+    background: #ffffff;
+    border-radius: 14px;
+    width: min(420px, 92vw);
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+    animation: slideUp 0.2s cubic-bezier(.34, 1.56, .64, 1);
+    overflow: hidden;
+    padding: 0;
+}
+@keyframes slideUp {
+    from { transform: translateY(16px); opacity: 0 }
+    to   { transform: none; opacity: 1 }
+}
+
+.header-modal {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px 14px;
+    border-bottom: 1px solid #f1f5f9;
+    flex-shrink: 0;
+}
+
+.header-modal h3 {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+    color: #0f172a;
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+/* FIX ─ botón X para cerrar el modal */
+.btn-cerrar-modal {
+    background: #f1f5f9;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: #64748b;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    flex-shrink: 0;
+    line-height: 1;
+}
+.btn-cerrar-modal:hover {
+    background: #fef2f2;
+    color: var(--red, #d32f2f);
+}
+
+.contenido-modal-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 14px 18px;
+}
+.contenido-modal-scroll::-webkit-scrollbar { width: 4px; }
+.contenido-modal-scroll::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+/* secciones acordeón */
+.menu-seccion {
+    margin-bottom: 8px;
+    background: #f8fafc;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+}
+
+.header-seccion-menu {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 11px 14px;
+    cursor: pointer;
+    background-color: #f8fafc;
+    transition: background-color 0.15s;
+}
+.header-seccion-menu:hover { background-color: #f1f5f9; }
+
+.titulo-seccion-menu {
+    font-size: 12px;
+    color: #334155;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin: 0;
+    font-weight: 700;
+}
+
+.icono-desplegable {
+    font-size: 17px;
+    color: #94a3b8;
+    line-height: 1;
+}
+
+.grid-menu-seleccion {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    padding: 0 12px 12px;
+}
+
+/* FIX ─ click en plato no cierra el modal */
+.tarjeta-plato-seleccion {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 10px 14px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    transition: border-color 0.15s, background 0.15s;
+    user-select: none;
+}
+.tarjeta-plato-seleccion:hover {
+    border-color: var(--red, #d32f2f);
+    background: #fef2f2;
+}
+.tarjeta-plato-seleccion:active { transform: scale(0.98); }
+
+.plato-nombre {
+    font-size: 13px;
+    font-weight: 600;
+    color: #334155;
+    flex: 1;
+    word-break: break-word;
+    padding-right: 10px;
+}
+
+.plato-precio {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--red, #d32f2f);
+    flex-shrink: 0;
 }
