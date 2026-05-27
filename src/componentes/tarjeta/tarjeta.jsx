@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./Tarjeta.css";
+import "./tarjeta.css";
 
 
 // Estos son los campos
@@ -62,13 +62,13 @@ function Ingreso({ onGoToRegister, onLogin }) {
       <a href="">¿Olvidaste tu contraseña?</a>
       <div className="GrupoBotones">
         <Boton
-          className="BotonPrincipal"
+          className="BotonPrincipal1"
           onClick={onLogin}
           defaultLabel="Entrar"
           hoverLabel="登录"
         />
         <Boton
-          className="BotonSecundario"
+          className="BotonSecundario2"
           onClick={onGoToRegister}
           defaultLabel="Crear cuenta"
           hoverLabel="注册"

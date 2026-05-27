@@ -253,14 +253,108 @@ input[type="number"] {
   text-align: center;
 }
 
+.CajaColaCambios {
+  max-width: 680px;
+  overflow-y: auto;
+}
+
+.EstadoColaVacia {
+  padding: 1rem;
+  border-radius: var(--radius);
+  background: var(--bg-soft);
+  color: var(--muted);
+  font-family: var(--font-ui);
+  font-weight: 700;
+  text-align: center;
+}
+
+.ListaColaCambios {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 58vh;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.ItemColaCambio {
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  background: var(--bg-soft);
+  padding: 12px;
+}
+
+.CabeceraItemCola {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.NombreItemCola {
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: .95rem;
+  font-weight: 800;
+}
+
+.ListaCamposCola {
+  display: grid;
+  gap: 8px;
+}
+
+.CampoColaCambio {
+  display: grid;
+  grid-template-columns: 92px 1fr auto 1fr;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink-soft);
+  font-family: var(--font-body);
+  font-size: .84rem;
+}
+
+.EtiquetaCampoCola {
+  color: var(--muted);
+  font-family: var(--font-ui);
+  font-weight: 800;
+}
+
+.ValorCampoCola {
+  min-width: 0;
+  padding: 6px 8px;
+  border-radius: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ValorCampoCola.Antes {
+  background: var(--bg);
+  color: var(--muted);
+  text-decoration: line-through;
+}
+
+.ValorCampoCola.Despues {
+  background: #e8f5e9;
+  color: #235e26;
+  font-weight: 700;
+}
+
+.SeparadorCampoCola {
+  color: var(--muted);
+  font-family: var(--font-ui);
+  font-size: .75rem;
+  font-weight: 800;
+}
+
 /* Botón principal (Optimizado Táctil) */
 .BotonPrincipal {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
   gap: .5rem;
   padding: 0 1.6rem;
-  /* Aumentado para dar mínimo 44px altura táctil */
   height: 60px;
   background: var(--red);
   color: white;
@@ -275,6 +369,11 @@ input[type="number"] {
   min-height: 46px;
   /* Cumple guías táctiles Apple/Android */
   -webkit-tap-highlight-color: transparent;
+}
+
+.cancelar {
+  width: 50%;
+  height: 60px;
 }
 
 .busqueda {
@@ -340,33 +439,21 @@ input[type="number"] {
   -webkit-tap-highlight-color: transparent;
 }
 
-.cancelar {
-  height: 60px;
-}
-
 
 .temporales {
-  margin-left: -50px;
-  margin-right: 30px;
-  height: 60px;
-  width: 200px;
+  height: 38px;
+  width: auto;
+  min-width: 170px;
 }
 
 
 .SaveTemp {
-  margin-left: -50px;
-  height: 60px;
   display: flex;
-  flex-direction: row;
+  height: 38px;
   justify-content: center;
   align-items: center;
-  gap: 10px;
 }
 
-.SaveTemp>svg {
-  height: 25px;
-  width: 25px;
-}
 
 .temporales>svg {
   height: 20px;
@@ -445,29 +532,40 @@ input[type="number"] {
   align-items: center;
   background: var(--bg);
   border-bottom: 1px solid var(--border-light);
-  padding: 1.25rem 2rem;
-  height: 75px;
+  padding: .65rem 1.25rem;
+  min-height: 64px;
+  position: relative;
+  z-index: 20;
 }
 
 .FilaCabeceraFlex {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 8.5rem;
+  width: 100%;
+  gap: 14px;
+}
+
+.ContenedorTituloMenu {
+  display: flex;
+  flex-direction: column;
+  width: auto;
+  min-width: 180px;
+  height: 100%;
 }
 
 .TituloMenu {
   font-family: var(--font-display);
-  font-size: 1.6rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: var(--ink);
   margin: 0;
+  line-height: 1.1;
 }
 
 .FilaEstadisticas {
   display: flex;
-  gap: 16px;
-  margin-top: 4px;
+  gap: 10px;
+  margin-top: 2px;
 }
 
 .EtiquetaEstadistica {
@@ -488,8 +586,142 @@ input[type="number"] {
 
 .AccionesCabeceraFlex {
   display: flex;
-  gap: 12px;
+  justify-content: flex-end;
   align-items: center;
+  height: 100%;
+  width: auto;
+  gap: 8px;
+  margin-left: 100px;
+  flex-wrap: nowrap;
+  min-width: 0;
+}
+
+.CampoProgramacionTemporal {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  min-width: 238px;
+}
+
+.EtiquetaProgramacionTemporal {
+  color: var(--ink-soft);
+  font-family: var(--font-ui);
+  font-size: .72rem;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.EntradaFechaTemporal {
+  height: 38px;
+  min-height: 38px;
+  border: 1.5px solid var(--border-light);
+  border-radius: 10px;
+  background: var(--bg-soft);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: .82rem;
+  padding: 0 .65rem;
+  outline: none;
+  transition: all var(--transition);
+}
+
+.EntradaFechaTemporal:focus {
+  border-color: var(--red);
+  background: var(--bg);
+  box-shadow: 0 0 0 3px rgba(180, 24, 0, 0.08);
+}
+
+.EstadoFechaTemporal {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  max-width: 260px;
+  min-height: 38px;
+  padding: 0 .8rem;
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  background: var(--bg-soft);
+  color: var(--ink-soft);
+  font-family: var(--font-ui);
+  font-size: .8rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.EstadoFechaTemporal span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.CajaFechaTemporal {
+  max-width: 500px;
+}
+
+.EntradaFechaTemporalModal {
+  min-height: 44px;
+}
+
+.MenuTemporalDesplegable {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.BotonMenuTemporal {
+  height: 38px !important;
+  min-height: 38px !important;
+  padding: 0 .9rem !important;
+  white-space: nowrap;
+}
+
+.PanelMenuTemporal {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 200px;
+  padding: 6px;
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  background: var(--bg);
+  box-shadow: var(--shadow-md);
+  z-index: 50;
+}
+
+.OpcionMenuTemporal {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 8px;
+  min-height: 36px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ink-soft);
+  font-family: var(--font-body);
+  font-size: .86rem;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+
+.OpcionMenuTemporal:hover {
+  background: var(--red-ghost);
+  color: var(--red);
+}
+
+.OpcionMenuTemporal.OpcionPrincipal {
+  color: #2e7d32;
+}
+
+.OpcionMenuTemporal.OpcionPrincipal:hover {
+  background: #e8f5e9;
+  color: #235e26;
+}
+
+.OpcionMenuTemporal.OpcionPeligro {
+  color: var(--red);
 }
 
 /* Buscador en tiempo real de productos */
@@ -497,7 +729,8 @@ input[type="number"] {
   position: relative;
   display: flex;
   align-items: center;
-  min-width: 240px;
+  width: clamp(190px, 24vw, 270px);
+  min-width: 170px;
 }
 
 .IconoBuscador {
@@ -511,7 +744,7 @@ input[type="number"] {
 
 .EntradaBuscador {
   width: 100%;
-  padding: .65rem 1rem .65rem 2.4rem;
+  padding: .5rem .85rem .5rem 2.25rem;
   border: 1.5px solid var(--border-light);
   background: var(--bg-soft);
   border-radius: var(--radius-lg);
@@ -520,7 +753,7 @@ input[type="number"] {
   color: var(--ink);
   transition: all var(--transition);
   outline: none;
-  min-height: 44px;
+  min-height: 38px;
   /* Altura táctil ideal */
 }
 
@@ -701,7 +934,7 @@ input[type="number"] {
 }
 
 .ColumnaPrecioProducto {
-  flex: 0 0 80px;
+  flex: 0 0 140px;
   text-align: right;
 }
 
@@ -788,8 +1021,13 @@ input[type="number"] {
 
 .ContenedorAccionesModal {
   display: flex;
+  justify-content: center;
   gap: 12px;
   margin-top: 1rem;
+}
+
+.BotonAccionModal{
+  width: 220px;
 }
 
 /* Modal de confirmación */
@@ -888,11 +1126,11 @@ input[type="number"] {
 /* Tablets en Landscape / Computadores Pequeños (1024px - 1366px) */
 @media (max-width: 1366px) and (min-width: 1024px) {
   .CabeceraMenu {
-    padding: 1rem 1.5rem;
+    padding: .65rem 1.25rem;
   }
 
   .FilaCabeceraFlex {
-    gap: 1.5rem;
+    gap: .85rem;
   }
 
   .EtiquetaColumnaFlex2 {
@@ -920,14 +1158,15 @@ input[type="number"] {
 /* Tablets en Portrait (769px - 1024px) */
 @media (max-width: 1024px) {
   .FilaCabeceraFlex {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 1rem;
+    flex-direction: row;
+    align-items: center;
+    gap: .75rem;
   }
 
   .AccionesCabeceraFlex {
-    width: 100%;
-    justify-content: space-between;
+    width: auto;
+    justify-content: flex-end;
+    flex-wrap: wrap;
   }
 
   .ContenedorBuscador {
@@ -936,13 +1175,13 @@ input[type="number"] {
   }
 
   .CabeceraMenu {
-    padding: 1rem 1.5rem;
+    padding: .65rem 1rem;
     display: flex;
-    flex-direction: column;
-    align-items: stretch;
+    flex-direction: row;
+    align-items: center;
     height: auto;
-    min-height: 75px;
-    gap: 0.75rem;
+    min-height: 64px;
+    gap: .5rem;
   }
 
   .CabeceraColumnasLista {
@@ -971,24 +1210,27 @@ input[type="number"] {
   }
 
   .BotonPrincipal {
-    width: 100%;
+    width: auto;
   }
 
   .CabeceraMenu {
-    padding: 1rem;
-    flex-direction: column;
-    gap: 1rem;
+    padding: .6rem .8rem;
+    flex-direction: row;
+    gap: .6rem;
   }
 
   .FilaCabeceraFlex {
-    flex-direction: column;
-    gap: 0.75rem;
+    flex-direction: row;
+    align-items: center;
+    gap: .6rem;
   }
 
   .AccionesCabeceraFlex {
-    flex-direction: column-reverse;
-    align-items: stretch;
-    gap: 1rem;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    gap: .5rem;
+    flex-wrap: wrap;
   }
 
   .CabeceraColumnasLista {
@@ -1038,18 +1280,19 @@ input[type="number"] {
 /* Celulares / Dispositivos Móviles (<= 640px) */
 @media (max-width: 640px) {
   .CabeceraMenu {
-    padding: 1rem;
-    flex-direction: column;
+    padding: .55rem .7rem;
+    flex-direction: row;
   }
 
   .TituloMenu {
-    font-size: 1.3rem;
+    font-size: 1.05rem;
   }
 
   .AccionesCabeceraFlex {
-    flex-direction: column-reverse;
-    align-items: stretch;
-    gap: 0.75rem;
+    flex-direction: row;
+    align-items: center;
+    gap: .5rem;
+    flex-wrap: wrap;
   }
 
   .ContenedorBuscador {
@@ -1058,8 +1301,8 @@ input[type="number"] {
   }
 
   .BotonPrincipal {
-    width: 100%;
-    height: 50px;
+    width: auto;
+    height: 38px;
     font-size: 0.9rem;
   }
 
@@ -1235,7 +1478,8 @@ input[type="number"] {
 }
 
 .BotonExito {
-  height: 60px !important;
+  height: 38px !important;
+  min-height: 38px !important;
   background: #2e7d32 !important;
   box-shadow: 0 4px 12px rgba(46, 125, 50, 0.22) !important;
 }

@@ -6,6 +6,7 @@ import SkeletonLoader from "./SkeletonLoader";
 
 const LS_KEY = "tr_menu_products";
 const LS_DRAFT_KEY = "tr_menu_draft";
+const LS_DRAFT_SCHEDULE_KEY = "tr_menu_draft_schedule";
 
 function loadProducts() {
   try {
@@ -37,6 +38,18 @@ function saveDraft(draft) {
   }
 }
 
+function loadDraftSchedule() {
+  return localStorage.getItem(LS_DRAFT_SCHEDULE_KEY) || "";
+}
+
+function saveDraftSchedule(value) {
+  if (value) {
+    localStorage.setItem(LS_DRAFT_SCHEDULE_KEY, value);
+  } else {
+    localStorage.removeItem(LS_DRAFT_SCHEDULE_KEY);
+  }
+}
+
 const Icon = {
   Edit: () => (
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -64,11 +77,6 @@ const Icon = {
       <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
     </svg>
   ),
-  Check: () => (
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-      <polyline points="20 6 9 17 4 12"/>
-    </svg>
-  ),
   X: () => (
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
       <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
@@ -89,6 +97,16 @@ const Icon = {
   Search: () => (
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
+  ),
+  ChevronDown: () => (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="6 9 12 15 18 9"/>
+    </svg>
+  ),
+  Calendar: () => (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
     </svg>
   ),
 };
@@ -114,6 +132,85 @@ function CategoryFilter({ categories, selected, onChange }) {
   );
 }
 
+function getChangedFields(current, pending) {
+  const fields = [
+    { key: "name", label: "Nombre" },
+    { key: "description", label: "Descripcion" },
+    { key: "category", label: "Categoria" },
+    { key: "price", label: "Precio", format: formatPrice },
+    { key: "active", label: "Estado", format: (value) => value ? "Activo" : "Inactivo" },
+  ];
+
+  return fields.reduce((changes, field) => {
+    const currentValue = current?.[field.key] ?? "";
+    const pendingValue = pending?.[field.key] ?? "";
+    const normalize = field.key === "price" ? Number : String;
+
+    if (normalize(currentValue) !== normalize(pendingValue)) {
+      changes.push({
+        label: field.label,
+        before: field.format ? field.format(currentValue) : String(currentValue || "Sin valor"),
+        after: field.format ? field.format(pendingValue) : String(pendingValue || "Sin valor"),
+      });
+    }
+
+    return changes;
+  }, []);
+}
+
+function QueueModal({ items, onClose }) {
+  useEffect(() => {
+    const handler = (e) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [onClose]);
+
+  return (
+    <div
+      className="CapaSuperpuesta"
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+    >
+      <div className="CajaModal CajaColaCambios">
+        <div className="SeccionCabeceraModal">
+          <h2 className="TituloCabeceraModal">Cola de cambios</h2>
+          <p className="SubtituloCabeceraModal">Solo lectura de los productos que tienen cambios pendientes.</p>
+        </div>
+
+        {items.length === 0 ? (
+          <div className="EstadoColaVacia">No hay productos con cambios pendientes.</div>
+        ) : (
+          <div className="ListaColaCambios">
+            {items.map(item => (
+              <div className="ItemColaCambio" key={item.key}>
+                <div className="CabeceraItemCola">
+                  <span className="NombreItemCola">{item.name}</span>
+                  <span className="EtiquetaPendiente">Pendiente</span>
+                </div>
+                <div className="ListaCamposCola">
+                  {item.changes.map(change => (
+                    <div className="CampoColaCambio" key={change.label}>
+                      <span className="EtiquetaCampoCola">{change.label}</span>
+                      <span className="ValorCampoCola Antes">{change.before}</span>
+                      <span className="SeparadorCampoCola">a</span>
+                      <span className="ValorCampoCola Despues">{change.after}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <div className="ContenedorAccionesModal">
+          <button className="BotonPrincipal BotonAccionModal" onClick={onClose}>
+            Cerrar
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function ProductRow({ product, index, onEdit, onToggle, onDelete, isDraftMode, onDraftChange, isPending, categories = [] }) {
   const inputRef = useRef(null);
   const [inputPos, setInputPos] = useState({ top: 0, left: 0, width: 0 });
@@ -129,9 +226,11 @@ function ProductRow({ product, index, onEdit, onToggle, onDelete, isDraftMode, o
     }
   }, [isDraftMode, product.category]);
 
-  const date = new Date(product.created || Date.now()).toLocaleDateString("es-CO", {
-    day: "2-digit", month: "short", year: "numeric"
-  });
+  const date = product.created
+    ? new Date(product.created).toLocaleDateString("es-CO", {
+      day: "2-digit", month: "short", year: "numeric"
+    })
+    : "";
 
   return (
     <div className={`ContenedorFilaProducto ${product.active ? "" : "Inactivo"} ${isPending ? "FilaPendiente" : ""}`}>
@@ -231,7 +330,7 @@ function ProductRow({ product, index, onEdit, onToggle, onDelete, isDraftMode, o
           />
         ) : (
           <span className="ValorPrecioProducto">
-            ${Number(product.price).toLocaleString("es-CO", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            {formatPrice(product.price)}
           </span>
         )}
       </div>
@@ -402,7 +501,7 @@ function ProductModal({ product, onSave, onClose, categories }) {
 
         <div className="ContenedorAccionesModal">
           <button className="BotonPrincipal BotonAccionModal" onClick={handleSave}>
-            <Icon.Check /> {isEditing ? "Guardar cambios" : "Agregar producto"}
+            {isEditing ? "Guardar cambios" : "Agregar producto"}
           </button>
           <button className="BotonSecundario" onClick={onClose}>
             <Icon.X /> Cancelar
@@ -455,9 +554,73 @@ function ConfirmModal({ config, onConfirm, onCancel }) {
             className={`BotonPrincipal BotonConfirmar ${config.danger ? "AccionPeligro" : "AccionExito"}`}
             onClick={onConfirm}
           >
-            <Icon.Check /> {config.confirmLabel ?? "Confirmar"}
+            {config.confirmLabel ?? "Confirmar"}
           </button>
           <button className="BotonSecundario BotonCancelarConfirmar" onClick={onCancel}>
+            <Icon.X /> Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ScheduleModal({ value, onSave, onClose }) {
+  const [dateValue, setDateValue] = useState(value || "");
+  const [error, setError] = useState("");
+
+  const handleSave = () => {
+    if (dateValue) {
+      const applyTime = new Date(dateValue).getTime();
+      if (Number.isNaN(applyTime) || applyTime <= Date.now()) {
+        setError("Selecciona una fecha y hora futura.");
+        return;
+      }
+    }
+
+    onSave(dateValue);
+  };
+
+  useEffect(() => {
+    const handler = (e) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [onClose]);
+
+  return (
+    <div
+      className="CapaSuperpuesta CapaSuperpuestaConfirmar"
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+    >
+      <div className="CajaModal CajaFechaTemporal">
+        <div className="SeccionCabeceraModal">
+          <h2 className="TituloCabeceraModal">Fecha de cambios</h2>
+          <p className="SubtituloCabeceraModal">Programa cuando se aplicará la cola de cambios temporales.</p>
+        </div>
+
+        <div className="Campo">
+          <label className="Etiqueta" htmlFor="editarFechaCambiosTemporales">Aplicar el</label>
+          <input
+            id="editarFechaCambiosTemporales"
+            className="Entrada EntradaFechaTemporalModal"
+            type="datetime-local"
+            value={dateValue}
+            onChange={(e) => {
+              setDateValue(e.target.value);
+              setError("");
+            }}
+          />
+          {error && <span className="EtiquetaErrorCampo">{error}</span>}
+        </div>
+
+        <div className="ContenedorAccionesModal">
+          <button className="BotonPrincipal BotonAccionModal" onClick={handleSave}>
+            Guardar fecha
+          </button>
+          <button className="BotonSecundario" onClick={() => onSave("")}>
+            Sin fecha
+          </button>
+          <button className="BotonSecundario" onClick={onClose}>
             <Icon.X /> Cancelar
           </button>
         </div>
@@ -470,11 +633,15 @@ export default function MenuPage({ Sidebar }) {
   const [products, setProducts] = useState(() => loadProducts());
   const [draftProducts, setDraftProducts] = useState(null);
   const [pendingChanges, setPendingChanges] = useState(() => loadDraft());
+  const [scheduledApplyAt, setScheduledApplyAt] = useState(() => loadDraftSchedule());
   const [categoryFilter, setCategoryFilter] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [productModal, setProductModal] = useState(null);
   const [confirmModal, setConfirmModal] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [temporaryMenuOpen, setTemporaryMenuOpen] = useState(false);
+  const [scheduleModalOpen, setScheduleModalOpen] = useState(false);
+  const [queueModalOpen, setQueueModalOpen] = useState(false);
 
   const categories = useMemo(
     () => [...new Set((draftProducts || products).map(p => p.category).filter(Boolean))].sort(),
@@ -496,9 +663,51 @@ export default function MenuPage({ Sidebar }) {
     return list;
   }, [products, draftProducts, categoryFilter, searchTerm]);
 
+  const changedQueueItems = useMemo(() => {
+    if (!pendingChanges) return [];
+
+    return pendingChanges
+      .map((pendingProduct, index) => {
+        const currentProduct = products[index];
+        const changes = getChangedFields(currentProduct, pendingProduct);
+        return {
+          key: pendingProduct.id ?? pendingProduct.created ?? index,
+          name: pendingProduct.name || currentProduct?.name || `Producto ${index + 1}`,
+          changes,
+        };
+      })
+      .filter(item => item.changes.length > 0);
+  }, [products, pendingChanges]);
+
   useEffect(() => {
     saveProducts(products);
   }, [products]);
+
+  const applyPendingChanges = useCallback(() => {
+    if (!pendingChanges) return;
+    setProducts(pendingChanges);
+    setPendingChanges(null);
+    setScheduledApplyAt("");
+    setTemporaryMenuOpen(false);
+    saveDraft(null);
+    saveDraftSchedule("");
+  }, [pendingChanges]);
+
+  useEffect(() => {
+    if (!pendingChanges || !scheduledApplyAt) return;
+
+    const applyTime = new Date(scheduledApplyAt).getTime();
+    if (Number.isNaN(applyTime)) return;
+
+    const delay = applyTime - Date.now();
+    if (delay <= 0) {
+      const timer = setTimeout(applyPendingChanges, 0);
+      return () => clearTimeout(timer);
+    }
+
+    const timer = setTimeout(applyPendingChanges, Math.min(delay, 2147483647));
+    return () => clearTimeout(timer);
+  }, [pendingChanges, scheduledApplyAt, applyPendingChanges]);
 
   // Simula carga inicial
   useEffect(() => {
@@ -514,10 +723,36 @@ export default function MenuPage({ Sidebar }) {
       alert("No hay productos agregados al menú. Debe agregar al menos un producto antes de hacer cambios temporales.");
       return;
     }
+    if (!pendingChanges) {
+      setScheduledApplyAt("");
+    }
+    setTemporaryMenuOpen(false);
     setDraftProducts(pendingChanges ? JSON.parse(JSON.stringify(pendingChanges)) : JSON.parse(JSON.stringify(products)));
   };
 
   const handleSaveDraft = () => {
+    const cleanDraft = draftProducts.map(p => ({
+      ...p,
+      price: parseFloat(p.price) || 0
+    }));
+
+    const hasTemporaryChanges =
+      cleanDraft.length !== products.length ||
+      cleanDraft.some((product, index) => getChangedFields(products[index], product).length > 0);
+
+    if (!hasTemporaryChanges) {
+      alert("No hay cambios temporales para guardar. Modifica al menos un producto antes de confirmar.");
+      return;
+    }
+
+    if (scheduledApplyAt) {
+      const applyTime = new Date(scheduledApplyAt).getTime();
+      if (Number.isNaN(applyTime) || applyTime <= Date.now()) {
+        alert("Selecciona una fecha y hora futura para programar los cambios temporales.");
+        return;
+      }
+    }
+
     setConfirmModal({
       config: {
         title: "Guardar borrador",
@@ -526,18 +761,17 @@ export default function MenuPage({ Sidebar }) {
         danger: false,
       },
       action: () => {
-        const cleanDraft = draftProducts.map(p => ({
-          ...p,
-          price: parseFloat(p.price) || 0
-        }));
         setPendingChanges(cleanDraft);
         saveDraft(cleanDraft);
+        saveDraftSchedule(scheduledApplyAt);
         setDraftProducts(null);
+        setTemporaryMenuOpen(false);
       }
     });
   };
 
   const handleApplyDraft = () => {
+    setTemporaryMenuOpen(false);
     setConfirmModal({
       config: {
         title: "Aplicar cambios pendientes",
@@ -545,15 +779,12 @@ export default function MenuPage({ Sidebar }) {
         confirmLabel: "Aplicar cambios",
         danger: false,
       },
-      action: () => {
-        setProducts(pendingChanges);
-        setPendingChanges(null);
-        saveDraft(null);
-      }
+      action: applyPendingChanges
     });
   };
 
   const handleCancelDraft = () => {
+    setTemporaryMenuOpen(false);
     setConfirmModal({
       config: {
         title: "Cancelar pendientes",
@@ -563,14 +794,20 @@ export default function MenuPage({ Sidebar }) {
       },
       action: () => {
         setPendingChanges(null);
+        setScheduledApplyAt("");
         saveDraft(null);
+        saveDraftSchedule("");
         setDraftProducts(null);
       }
     });
   };
 
   const handleCancelEdit = () => {
+    if (!pendingChanges) {
+      setScheduledApplyAt("");
+    }
     setDraftProducts(null);
+    setTemporaryMenuOpen(false);
   };
 
   const handleDraftChange = (index, field, value) => {
@@ -581,8 +818,34 @@ export default function MenuPage({ Sidebar }) {
     });
   };
 
+  const handleViewQueue = () => {
+    if (!pendingChanges) return;
+    setTemporaryMenuOpen(false);
+    setQueueModalOpen(true);
+  };
+
+  const handleOpenScheduleModal = () => {
+    setTemporaryMenuOpen(false);
+    setScheduleModalOpen(true);
+  };
+
+  const handleSaveSchedule = (value) => {
+    setScheduledApplyAt(value);
+    saveDraftSchedule(value);
+    setScheduleModalOpen(false);
+  };
+
   const isDraftMode = draftProducts !== null;
   const hasPendingChanges = pendingChanges !== null && draftProducts === null;
+  const scheduleLabel = scheduledApplyAt
+    ? `${new Date(scheduledApplyAt).toLocaleString("es-CO", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    })}`
+    : "No hay fecha elegida";
 
   const openAdd = useCallback(() => {
     setProductModal({ product: null, index: null });
@@ -698,8 +961,8 @@ export default function MenuPage({ Sidebar }) {
       <main className="MenuPrincipal">
         <header className="CabeceraMenu">
           <div className="FilaCabeceraFlex">
-            {!hasPendingChanges && (
-              <div>
+            {(
+              <div className="ContenedorTituloMenu">
                 <h1 className="TituloMenu">Gestión de Menú</h1>
                 <div className="FilaEstadisticas">
                   <span className="EtiquetaEstadistica">
@@ -720,24 +983,70 @@ export default function MenuPage({ Sidebar }) {
             <div className="AccionesCabeceraFlex">
               {isDraftMode ? (
                 <>
-                  <button className="BotonPrincipal busqueda SaveTemp" onClick={handleSaveDraft}>
-                    <Icon.Check /> Guardar cambios temporales
-                  </button>
-                  <button className="BotonSecundario busqueda cancelar" onClick={handleCancelEdit}>
-                    Cancelar
-                  </button>
+                  <div className="EstadoFechaTemporal">
+                    <Icon.Calendar />
+                    <span>{scheduleLabel}</span>
+                  </div>
+                  <div className="MenuTemporalDesplegable">
+                    <button
+                      className="BotonSecundario busqueda BotonMenuTemporal"
+                      onClick={() => setTemporaryMenuOpen(open => !open)}
+                    >
+                      <Icon.Edit /> Temporales <Icon.ChevronDown />
+                    </button>
+                    {temporaryMenuOpen && (
+                      <div className="PanelMenuTemporal">
+                        <button className="OpcionMenuTemporal OpcionPrincipal" onClick={handleSaveDraft}>
+                          Guardar cambios
+                        </button>
+                        {pendingChanges && (
+                          <button className="OpcionMenuTemporal" onClick={handleViewQueue}>
+                            Cola de cambios
+                          </button>
+                        )}
+                        <button className="OpcionMenuTemporal" onClick={handleOpenScheduleModal}>
+                          <Icon.Calendar /> Editar fecha
+                        </button>
+                        <button className="OpcionMenuTemporal" onClick={handleCancelEdit}>
+                          Cancelar edición
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </>
               ) : hasPendingChanges ? (
                 <>
-                  <button className="BotonPrincipal busqueda BotonExito" onClick={handleApplyDraft}>
-                    <Icon.Check /> Aplicar cambios pendientes
-                  </button>
-                  <button className="BotonSecundario busqueda BotonPeligro" onClick={handleCancelDraft}>
-                    <Icon.X /> Cancelar pendientes
-                  </button>
-                  <button className="BotonSecundario busqueda" onClick={handleStartDraft}>
-                    <Icon.Edit /> Editar pendientes
-                  </button>
+                  <div className="EstadoFechaTemporal">
+                    <Icon.Calendar />
+                    <span>{scheduleLabel}</span>
+                  </div>
+                  <div className="MenuTemporalDesplegable">
+                    <button
+                      className="BotonPrincipal busqueda BotonExito BotonMenuTemporal"
+                      onClick={() => setTemporaryMenuOpen(open => !open)}
+                    >
+                      Pendientes <Icon.ChevronDown />
+                    </button>
+                    {temporaryMenuOpen && (
+                      <div className="PanelMenuTemporal">
+                        <button className="OpcionMenuTemporal OpcionPrincipal" onClick={handleApplyDraft}>
+                          Aplicar ahora
+                        </button>
+                        <button className="OpcionMenuTemporal" onClick={handleViewQueue}>
+                          Cola de cambios
+                        </button>
+                        <button className="OpcionMenuTemporal" onClick={handleOpenScheduleModal}>
+                          <Icon.Calendar /> Editar fecha
+                        </button>
+                        <button className="OpcionMenuTemporal" onClick={handleStartDraft}>
+                          <Icon.Edit /> Editar pendientes
+                        </button>
+                        <button className="OpcionMenuTemporal OpcionPeligro" onClick={handleCancelDraft}>
+                          <Icon.X /> Cancelar pendientes
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </>
               ) : (
                 <button className="BotonSecundario busqueda temporales" onClick={handleStartDraft}>
@@ -808,9 +1117,7 @@ export default function MenuPage({ Sidebar }) {
               const isPending = !!(
                 pendingChanges &&
                 pendingChanges[product._idx] &&
-                (pendingChanges[product._idx].name !== product.name ||
-                  parseFloat(pendingChanges[product._idx].price) !== parseFloat(product.price) ||
-                  (pendingChanges[product._idx].description || "") !== (product.description || ""))
+                getChangedFields(product, pendingChanges[product._idx]).length > 0
               );
               return (
                 <ProductRow
@@ -837,6 +1144,21 @@ export default function MenuPage({ Sidebar }) {
           onSave={handleSaveProduct}
           onClose={() => setProductModal(null)}
           categories={categories}
+        />
+      )}
+
+      {scheduleModalOpen && (
+        <ScheduleModal
+          value={scheduledApplyAt}
+          onSave={handleSaveSchedule}
+          onClose={() => setScheduleModalOpen(false)}
+        />
+      )}
+
+      {queueModalOpen && (
+        <QueueModal
+          items={changedQueueItems}
+          onClose={() => setQueueModalOpen(false)}
         />
       )}
 
