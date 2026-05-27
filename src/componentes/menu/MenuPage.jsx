@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import "./MenuPage.css";
 import MultiSelectChip from "./MultiSelectChip";
+import SkeletonLoader from "./SkeletonLoader";
 
 
 const LS_KEY = "tr_menu_products";
@@ -473,6 +474,7 @@ export default function MenuPage({ Sidebar }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [productModal, setProductModal] = useState(null);
   const [confirmModal, setConfirmModal] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const categories = useMemo(
     () => [...new Set((draftProducts || products).map(p => p.category).filter(Boolean))].sort(),
@@ -497,6 +499,14 @@ export default function MenuPage({ Sidebar }) {
   useEffect(() => {
     saveProducts(products);
   }, [products]);
+
+  // Simula carga inicial
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 800);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleStartDraft = () => {
     // Validar que haya productos antes de permitir cambios temporales
@@ -791,6 +801,8 @@ export default function MenuPage({ Sidebar }) {
                 </div>
               )}
             </div>
+          ) : isLoading ? (
+            <SkeletonLoader count={products.length > 0 ? products.length : 1} />
           ) : (
             filtered.map(product => {
               const isPending = !!(

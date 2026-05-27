@@ -1,0 +1,130 @@
+/* Animación de pulsación (shimmer effect) */
+@keyframes skeleton-pulse {
+  0% {
+    background-color: var(--bg-muted);
+  }
+  50% {
+    background-color: var(--border-light);
+  }
+  100% {
+    background-color: var(--bg-muted);
+  }
+}
+
+/* Contenedor principal del skeleton */
+.SkeletonContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+}
+
+/* Fila del skeleton */
+.SkeletonRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--border-light);
+  background: var(--bg);
+  min-height: 58px;
+  animation: skeleton-pulse 2s ease-in-out infinite;
+}
+
+/* Punto de estado */
+.SkeletonPoint {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--bg-muted);
+  animation: skeleton-pulse 2s ease-in-out infinite;
+}
+
+/* Barras de texto */
+.SkeletonText {
+  background-color: var(--bg-muted);
+  border-radius: var(--radius);
+  animation: skeleton-pulse 2s ease-in-out infinite;
+}
+
+/* Nombre del producto (barra más grande) */
+.SkeletonName {
+  flex: 2 1 160px;
+  min-width: 100px;
+  height: 20px;
+}
+
+/* Categoría */
+.SkeletonCategory {
+  flex: 1 1 100px;
+  height: 20px;
+  min-width: 60px;
+}
+
+/* Precio */
+.SkeletonPrice {
+  flex: 0 0 80px;
+  height: 20px;
+}
+
+/* Botones de acción */
+.SkeletonActions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* Botón skeleton individual */
+.SkeletonButton {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background-color: var(--bg-muted);
+  animation: skeleton-pulse 2s ease-in-out infinite;
+}
+
+/* Responsivo: Tablets */
+@media (max-width: 1024px) {
+  .SkeletonRow {
+    padding: 10px 14px;
+  }
+}
+
+/* Responsivo: Móviles */
+@media (max-width: 640px) {
+  .SkeletonRow {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 16px 14px;
+    border-radius: 12px;
+    margin: 8px;
+    border: 1.5px solid var(--border-light);
+    box-shadow: var(--shadow-sm);
+    border-bottom: none;
+  }
+
+  .SkeletonName {
+    flex: 1 1 100%;
+    height: 18px;
+  }
+
+  .SkeletonCategory {
+    flex: 0 0 auto;
+    width: 80px;
+    order: -1;
+  }
+
+  .SkeletonPrice {
+    flex: 1 1 auto;
+    order: -1;
+  }
+
+  .SkeletonActions {
+    flex: 1 1 100%;
+    justify-content: flex-end;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--border-light);
+  }
+}
