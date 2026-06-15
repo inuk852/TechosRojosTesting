@@ -268,7 +268,7 @@
     transform: translateX(100%);
   }
 
-  /* Estado activo */
+
   .TarjetaActiva .SeccionFormulario {
     transform: translateX(-100%);
     opacity: 0;
@@ -286,6 +286,12 @@
   .TarjetaActiva .Ramen {
     transform: rotate(-180deg) scale(0.9);
   }
+
+.SeccionFormulario a{
+  color: #7e1100;
+  text-decoration: none;
+  
+}
 
   @media (max-width: 768px) {
     .Tarjeta {

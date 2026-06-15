@@ -8,7 +8,7 @@
     transition: var(--t);
     user-select: none;
     background: var(--red);
-    border-color: var(--red-dark);
+    border-color: var(--red);
     color: white;
     width: 100%;
     max-width: 170px;
