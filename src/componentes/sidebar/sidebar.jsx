@@ -1,11 +1,12 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import './sidebar.css'
 
 function Sidebar() {
     const [sidebarAbierto, setSidebarAbierto] = useState(true);
 
     function NavLink({ link, title }) {
-        return <a href={link}>{title}</a>
+        return <Link to={link}>{title}</Link>
     }
 
     return <div className={"sidebar " + (sidebarAbierto ? "" : "cerrado")}>

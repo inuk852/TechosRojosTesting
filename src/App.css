@@ -27,3 +27,43 @@ main > .contenido {
   flex-wrap: wrap;
   margin: 20px;
 }
+
+.modal {
+	position: fixed;
+	z-index: 100;
+	width: 100vw;
+	height: 100dvh;
+	top: 0;
+	background-color: rgba(0, 0, 0, 0.247);
+	backdrop-filter: blur(5px);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.modal > article {
+	background-color: white;
+	padding: 15px;
+	border-radius: 15px;
+}
+
+.contenido-mesas {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 15px;
+	padding: 15px;
+}
+
+.mesa {
+	width: 100%;
+	max-width: 200px;
+	height: 200px;
+	background-color: var(--red);
+	border-radius: 15px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+	color: white;
+	padding: 15px;
+}

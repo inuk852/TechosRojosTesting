@@ -1,11 +1,11 @@
 import "./mesa.css"
 
-export default function Mesa({id, cuentas, monto}) {
+export default function Mesa({id, cuentas, nombre, monto}) {
     return (
         <div className="mesa">
 
             <div className="topbar">
-               <span className="id">#1</span>
+               <span className="id">#{id}</span>
                 <span className="cuentas">{cuentas}4 cuentas</span>
             </div>
 
@@ -13,7 +13,7 @@ export default function Mesa({id, cuentas, monto}) {
                 <span>
                     <img src="/menu.png" alt="" />
                 </span>
-                <h3>¿backend?</h3>
+                <h3>{nombre}</h3>
                 <span>${monto}</span>
             </div>
 

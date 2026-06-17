@@ -1,36 +1,14 @@
 import './App.css'
-import Header from "./componentes/header/header"
-import Sidebar from './componentes/sidebar/sidebar'
-import Mesa from './componentes/mesas/mesa'
-import Tarjeta from './componentes/tarjeta/tarjeta'
-
+import { BrowserRouter } from 'react-router-dom'
+import Rutas from './componentes/rutas'
 
 function App() {
-
   return (
-    <main>
-
-  <Tarjeta/>
-
-
-      <Sidebar />
-      <div className="contenido">
-        <Header
-          section="tetas"
-        />
-
-        <div className='mesas'>
-        <Mesa />
-        <Mesa />
-        <Mesa />
-        <Mesa />
-        <Mesa />
-        <Mesa />
-        </div>
-
-
-      </div>
-    </main>
+     <BrowserRouter>
+      <main>
+        <Rutas />
+      </main>
+    </BrowserRouter>
   )
 }
 
