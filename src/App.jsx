@@ -1,15 +1,6 @@
-import './App.css'
-import { BrowserRouter } from 'react-router-dom'
-import Rutas from './componentes/rutas'
+import Database from './components/Database.jsx';
+import './App.css';
 
-function App() {
-  return (
-     <BrowserRouter>
-      <main>
-        <Rutas />
-      </main>
-    </BrowserRouter>
-  )
+export default function App() {
+  return <Database />;
 }
-
-export default App

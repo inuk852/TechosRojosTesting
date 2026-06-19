@@ -1,16 +1,103 @@
-# React + Vite
+# TechosRojosTesting
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este repositorio entrega una plantilla funcional de base de datos para una aplicación web, usando ElectroDB sobre DynamoDB y una interfaz React desarrollada con Vite.
 
-Currently, two official plugins are available:
+## Objetivo
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+El proyecto es una base funcional y escalable que puede crecer con nuevas entidades y operaciones según las necesidades. Está pensada como punto de partida para:
 
-## React Compiler
+- modelar datos en DynamoDB con ElectroDB,
+- implementar una capa de servicios CRUD,
+- integrar un frontend React que muestre resultados y facilite pruebas.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Qué contiene la plantilla
 
-## Expanding the ESLint configuration
+- `src/db/config.js` — cliente de DynamoDB con soporte para DynamoDB Local y variables Vite.
+- `src/db/entities.js` — modelo de entidades ElectroDB:
+  - `Usuario`
+  - `Categoria`
+  - `Producto`
+  - `Mesa`
+  - `Pedido`
+  - `PedidoItem`
+- `src/services/database.js` — capa de acceso con funciones CRUD reutilizables.
+- `src/components/Database.jsx` — interfaz inicial para crear y listar productos.
+- `src/components/Database.css` — estilos básicos que complementan la interfaz.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Cómo ejecutar
+
+1. Instala dependencias:
+
+```bash
+npm install
+```
+
+2. Ejecuta la aplicación:
+
+```bash
+npm run dev
+```
+
+3. Abre el navegador en la URL que indique Vite.
+
+## Uso con DynamoDB Local
+
+Para trabajar localmente, ejecuta DynamoDB Local en `http://localhost:8000`.
+
+Por defecto, `src/db/config.js` usa:
+
+- `endpoint`: `http://localhost:8000`
+- `accessKeyId`: `local`
+- `secretAccessKey`: `local`
+- `table`: `TechosRojosTable`
+
+Si quieres personalizarlo, define variables de entorno Vite:
+
+```bash
+VITE_DYNAMODB_ENDPOINT=http://localhost:8000
+VITE_AWS_REGION=us-east-1
+VITE_AWS_ACCESS_KEY_ID=local
+VITE_AWS_SECRET_ACCESS_KEY=local
+VITE_DYNAMODB_TABLE=TechosRojosTable
+```
+
+## Cómo extender esta base
+
+Para seguir construyendo sobre esta plantilla, puedes:
+
+- agregar nuevas entidades en `src/db/entities.js`,
+- crear índices adicionales si necesitas consultas especializadas,
+- añadir más funciones service en `src/services/database.js`,
+- exponer una API backend en Node.js o serverless si necesitas seguridad,
+- conectar más componentes React que usen la capa de servicios.
+
+## Adaptación para AWS
+
+ElectroDB se usa sobre DynamoDB, por lo que el modelo de datos es compatible con AWS.
+
+Para un entorno productivo en AWS, lo ideal es:
+
+- mover la lógica de acceso a datos a un backend seguro,
+- no exponer credenciales de AWS desde el frontend,
+- usar variables de entorno del servidor para `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` y `AWS_REGION`.
+
+Si necesitas probar una conexión en backend, estas variables serían las usadas:
+
+```bash
+AWS_REGION=us-east-1
+AWS_ACCESS_KEY_ID=<tu-access-key>
+AWS_SECRET_ACCESS_KEY=<tu-secret-key>
+DYNAMODB_TABLE=TechosRojosTable
+```
+
+> En Vite, las variables expuestas al cliente deben usar `VITE_*`, como `VITE_AWS_REGION`.
+
+## Qué se puede mostrar en una presentación
+
+- la estructura de carpetas y archivos,
+- el modelo inicial de datos en `src/db/entities.js`,
+- la capa CRUD de `src/services/database.js`,
+- la interfaz de inicio en `src/components/Database.jsx`,
+- la capacidad de ampliar esta base como plantilla inicial.
+
+
