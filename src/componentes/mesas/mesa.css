@@ -1,4 +1,4 @@
-/* Layout General */
+
 .contenido-mesas {
     display: flex;
     flex-wrap: wrap;
@@ -9,13 +9,14 @@
     align-items: flex-start;
 }
 
-/* Tarjeta de Mesa Minimalista y Adaptable */
+
 .mesa {
     min-width: 320px; 
-    width: fit-content; /* Se adapta al contenido interno */
-    max-width: 100%; /* Evita desbordamiento en pantallas pequeñas */
-    min-height: 420px;
-    background: #ffffff;
+    width: fit-content; 
+    max-width: 100%; 
+    min-height: 500px;
+    max-height: 300px;
+    background: #ff8181;
     border-radius: 12px;
     border: 1px solid #e2e8f0;
     padding: 20px;
@@ -58,7 +59,7 @@
     font-size: 20px;
     color: #0f172a;
     font-weight: 700;
-    word-break: break-word; /* Permite que el nombre largo baje a otra linea */
+    word-break: break-word; 
     cursor: pointer;
     transition: color 0.2s;
 }
